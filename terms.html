@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — CraftyForms</title>
+  <meta name="description" content="The terms governing your use of CraftyForms.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #F7F6F3;
+      --bg-white:   #FFFFFF;
+      --ink:        #161614;
+      --muted:      #6B6A65;
+      --faint:      #9B9A95;
+      --accent:     #C8451B;
+      --border:     #E3E2DD;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    nav {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .logo-dot { color: var(--accent); }
+
+    .nav-back {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.12s;
+    }
+
+    .nav-back:hover { color: var(--ink); }
+
+    .legal-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 72px 28px 96px;
+    }
+
+    .legal-meta {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 12px;
+    }
+
+    .legal-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    .legal-updated {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .legal-body h2 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-top: 40px;
+      margin-bottom: 12px;
+    }
+
+    .legal-body h2:first-child { margin-top: 0; }
+
+    .legal-body p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    .legal-body ul {
+      margin: 0 0 14px 20px;
+    }
+
+    .legal-body li {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 6px;
+    }
+
+    .legal-body a {
+      color: var(--ink);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .legal-body a:hover { color: var(--accent); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-copy { font-size: 13px; color: var(--faint); }
+
+    .footer-links { display: flex; gap: 20px; }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--faint);
+      text-decoration: none;
+      transition: color 0.12s;
+    }
+
+    .footer-links a:hover { color: var(--muted); }
+
+    @media (max-width: 540px) {
+      .legal-wrap { padding: 48px 20px 72px; }
+      .container { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <div class="nav-inner">
+        <a href="/" class="logo">Crafty<span class="logo-dot">Forms</span></a>
+        <a href="/" class="nav-back">Back to home</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="legal-wrap">
+    <div class="legal-meta">Legal</div>
+    <h1 class="legal-title">Terms of Service</h1>
+    <p class="legal-updated">Last updated: 21 March 2026</p>
+
+    <div class="legal-body">
+
+      <h2>Agreement</h2>
+      <p>By creating an account or using CraftyForms in any way, you agree to these terms. If you do not agree, do not use the service.</p>
+      <p>These terms apply to all users — form creators, respondents, and anyone accessing the platform.</p>
+
+      <h2>What CraftyForms is</h2>
+      <p>CraftyForms is a platform for creating forms, collecting responses, and managing the resulting data. It supports text, voice, image, and video responses. It provides a form builder, a public-facing filler interface, a response dashboard, and an API.</p>
+      <p>The service is provided as-is. We make reasonable efforts to maintain availability and reliability, but we do not guarantee uninterrupted access.</p>
+
+      <h2>Your account</h2>
+      <p>You are responsible for maintaining the security of your account credentials. Do not share your password. Notify us immediately if you believe your account has been compromised.</p>
+      <p>You must be at least 13 years old to create an account. Accounts are for individual use unless a team plan explicitly allows multiple members.</p>
+      <p>We reserve the right to suspend or terminate accounts that violate these terms, without prior notice where the violation is serious.</p>
+
+      <h2>Acceptable use</h2>
+      <p>You may use CraftyForms to collect data for lawful purposes. You may not use it to:</p>
+      <ul>
+        <li>Collect data without the respondent's knowledge or meaningful consent</li>
+        <li>Distribute spam, phishing content, or deceptive forms</li>
+        <li>Collect data from children under 13 without verifiable parental consent</li>
+        <li>Store or transmit content that is illegal, harmful, or infringes third-party rights</li>
+        <li>Attempt to reverse-engineer, scrape, or overload the service</li>
+        <li>Circumvent any technical or access controls</li>
+      </ul>
+      <p>We may remove forms or responses that violate these rules and take further action against the responsible account.</p>
+
+      <h2>Your data</h2>
+      <p>You own the data you collect through your forms. We do not claim any rights over it. We access it only to operate the service (e.g., to display responses in your dashboard, to process file uploads).</p>
+      <p>You are responsible for ensuring that your use of collected data complies with applicable privacy laws — including obtaining consent from respondents where required.</p>
+      <p>You can export and delete your data at any time. When you delete a form, all associated responses and files are permanently deleted.</p>
+
+      <h2>Respondent data</h2>
+      <p>When someone fills out your form, you become the data controller for their responses. You are responsible for how that data is handled, stored, and used. CraftyForms processes it on your behalf as a data processor.</p>
+      <p>Do not use CraftyForms to collect sensitive personal data (health records, financial information, government ID numbers) unless you have taken appropriate legal and security measures.</p>
+
+      <h2>Intellectual property</h2>
+      <p>CraftyForms, its codebase, design, brand, and documentation are proprietary. You may not copy, reproduce, or redistribute any part of the service without written permission.</p>
+      <p>Your form definitions, content, and collected data remain yours. You grant us a limited licence to store and process them solely to operate the service.</p>
+
+      <h2>Paid plans and billing</h2>
+      <p>Paid features are described on the pricing page. By subscribing, you authorise us to charge your payment method on the cycle stated at checkout.</p>
+      <p>Refunds are considered on a case-by-case basis. If the service was unavailable for a significant period due to our failure, we will credit your account accordingly.</p>
+      <p>We reserve the right to change pricing with 30 days' notice to existing subscribers. Continuing to use the service after the notice period constitutes acceptance of the new pricing.</p>
+
+      <h2>Termination</h2>
+      <p>You can close your account at any time from your account settings. Account closure triggers permanent deletion of your data within 30 days.</p>
+      <p>We may terminate or suspend access to the service at our discretion, with reasonable notice where possible. In the event of termination, you will have 14 days to export your data before it is deleted.</p>
+
+      <h2>Limitation of liability</h2>
+      <p>To the extent permitted by law, CraftyForms is not liable for indirect, incidental, special, consequential, or punitive damages — including loss of data, revenue, or business — arising from your use of or inability to use the service.</p>
+      <p>Our total liability for any claim arising from these terms or your use of the service is limited to the amount you paid us in the 12 months preceding the claim, or $100, whichever is greater.</p>
+
+      <h2>Disclaimer of warranties</h2>
+      <p>The service is provided "as is" and "as available" without warranties of any kind, express or implied. We do not warrant that the service will be error-free, uninterrupted, or meet any particular standard.</p>
+
+      <h2>Governing law</h2>
+      <p>These terms are governed by the laws of the jurisdiction in which CraftyForms is registered, without regard to conflict of law principles. Any disputes will be resolved in the courts of that jurisdiction.</p>
+
+      <h2>Changes to these terms</h2>
+      <p>We may update these terms from time to time. Material changes will be communicated by email or by a notice on the platform. Continued use after the effective date of changes constitutes acceptance.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about these terms: <a href="mailto:legal@craftyforms.com">legal@craftyforms.com</a></p>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">&copy; 2026 CraftyForms. All rights reserved.</span>
+        <div class="footer-links">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

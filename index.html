@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CraftyForms — The last form tool you'll need</title>
+  <meta name="description" content="CraftyForms captures text, voice, photos, and video. Build forms that let people answer however makes sense to them.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg:         #F7F6F3;
+      --bg-white:   #FFFFFF;
+      --bg-raised:  #EEECEA;
+      --ink:        #161614;
+      --muted:      #6B6A65;
+      --faint:      #9B9A95;
+      --accent:     #C8451B;
+      --accent-bg:  #FDF1ED;
+      --border:     #E3E2DD;
+      --border-mid: #CCCBC6;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── Utilities ──────────────────────────────── */
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Navigation ─────────────────────────────── */
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .logo-dot {
+      color: var(--accent);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.12s;
+    }
+
+    .nav-link:hover {
+      color: var(--ink);
+    }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--bg-white);
+      background: var(--ink);
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: opacity 0.12s;
+    }
+
+    .nav-cta:hover {
+      opacity: 0.75;
+    }
+
+    /* ── Hero ───────────────────────────────────── */
+
+    .hero {
+      padding: 88px 0 80px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-bg);
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 28px;
+    }
+
+    .hero-headline {
+      font-size: clamp(36px, 5.5vw, 68px);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+      max-width: 760px;
+      margin-bottom: 24px;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 1.8vw, 19px);
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 72px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--bg-white);
+      background: var(--accent);
+      padding: 11px 22px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: opacity 0.12s;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid var(--border-mid);
+      padding: 11px 22px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: border-color 0.12s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--muted);
+    }
+
+    /* ── Mock form widget ───────────────────────── */
+
+    .mock-wrap {
+      max-width: 580px;
+    }
+
+    .mock-form {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .mock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mock-form-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .mock-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mock-progress-bar {
+      width: 80px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .mock-progress-fill {
+      width: 25%;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+
+    .mock-progress-label {
+      font-size: 11px;
+      color: var(--faint);
+    }
+
+    .mock-body {
+      padding: 28px 24px 20px;
+    }
+
+    .mock-q-num {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--faint);
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    .mock-question {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .mock-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .mock-modes {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .mock-mode {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: default;
+      line-height: 1;
+    }
+
+    .mock-mode.active {
+      color: var(--accent);
+      background: var(--accent-bg);
+      border-color: #E8B8A8;
+    }
+
+    .mock-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--muted);
+      line-height: 1.5;
+      resize: none;
+      height: 80px;
+      margin-bottom: 16px;
+    }
+
+    .mock-footer-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .mock-btn-next {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--bg-white);
+      background: var(--ink);
+      border: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      cursor: default;
+    }
+
+    .mock-caption {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--faint);
+      padding-left: 4px;
+    }
+
+    /* ── Insight block ───────────────────────────── */
+
+    .insight {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .insight-text {
+      font-size: clamp(19px, 2.5vw, 26px);
+      font-weight: 400;
+      line-height: 1.55;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      max-width: 740px;
+    }
+
+    .insight-text strong {
+      font-weight: 600;
+    }
+
+    .insight-text .dim {
+      color: var(--muted);
+    }
+
+    /* ── Section label ───────────────────────────── */
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 40px;
+    }
+
+    /* ── Core features ───────────────────────────── */
+
+    .features {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .feature-cell {
+      padding: 36px 32px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+    }
+
+    .feature-cell:nth-child(2n) {
+      border-right: none;
+    }
+
+    .feature-cell:nth-child(3),
+    .feature-cell:nth-child(4) {
+      border-bottom: none;
+    }
+
+    .feature-cell:hover {
+      background: var(--bg-white);
+    }
+
+    .feature-num {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--faint);
+      letter-spacing: 0.05em;
+      margin-bottom: 18px;
+    }
+
+    .feature-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── Capabilities list ───────────────────────── */
+
+    .capabilities {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .cap-item {
+      padding: 24px 26px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cap-item:nth-child(3n) {
+      border-right: none;
+    }
+
+    .cap-item:nth-last-child(-n+3):nth-child(3n+1),
+    .cap-item:nth-last-child(-n+2):nth-child(3n+2),
+    .cap-item:nth-last-child(-n+1):nth-child(3n+3) {
+      border-bottom: none;
+    }
+
+    /* Simpler approach: remove bottom border from last row (9 items × 3 cols = 3 rows; last row starts at 7) */
+    .cap-item:nth-child(n+7) {
+      border-bottom: none;
+    }
+
+    .cap-footnote {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--faint);
+      line-height: 1.6;
+    }
+
+    .cap-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+
+    .cap-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Pricing ─────────────────────────────────── */
+
+    .pricing {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pricing-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .pricing-headline {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .pricing-sub {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .pricing-tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pricing-tier {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .pricing-tier-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .pricing-tier-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .pricing-tier.highlight {
+      border-color: var(--accent);
+    }
+
+    .pricing-tier.highlight .pricing-tier-name {
+      color: var(--accent);
+    }
+
+    /* ── Final CTA ───────────────────────────────── */
+
+    .final-cta {
+      padding: 96px 0;
+      text-align: center;
+    }
+
+    .final-headline {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .final-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+
+    /* ── Footer ──────────────────────────────────── */
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--faint);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--faint);
+      text-decoration: none;
+      transition: color 0.12s;
+    }
+
+    .footer-links a:hover {
+      color: var(--muted);
+    }
+
+    /* ── Responsive ──────────────────────────────── */
+
+    @media (max-width: 800px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-cell {
+        border-right: none !important;
+      }
+
+      .feature-cell:nth-child(3) {
+        border-bottom: 1px solid var(--border) !important;
+      }
+
+      .feature-cell:last-child {
+        border-bottom: none !important;
+      }
+
+      .cap-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cap-item:nth-child(2n) {
+        border-right: none;
+      }
+
+      .cap-item:nth-child(3n) {
+        border-right: 1px solid var(--border);
+      }
+
+      .cap-item:nth-child(n+7) {
+        border-bottom: 1px solid var(--border);
+      }
+
+      .cap-item:nth-last-child(1),
+      .cap-item:nth-last-child(2) {
+        border-bottom: none;
+      }
+
+      .pricing-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .nav-link {
+        display: none;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .container {
+        padding: 0 20px;
+      }
+
+      .hero {
+        padding: 64px 0 56px;
+      }
+
+      .cap-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cap-item {
+        border-right: none !important;
+        border-bottom: 1px solid var(--border) !important;
+      }
+
+      .cap-item:last-child {
+        border-bottom: none !important;
+      }
+
+      .footer-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <div class="nav-inner">
+        <a href="/" class="logo">Crafty<span class="logo-dot">Forms</span></a>
+        <div class="nav-right">
+          <a href="#features" class="nav-link">Features</a>
+          <a href="#pricing" class="nav-link">Pricing</a>
+          <a href="#early-access" class="nav-cta">Get early access</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-label">Now in early access</div>
+      <h1 class="hero-headline">Forms built for how people actually answer</h1>
+      <p class="hero-sub">Text, voice, a photo, a video. Your respondents answer however makes sense to them. You get structured data, your brand, your pipeline.</p>
+      <div class="hero-actions">
+        <a href="#early-access" class="btn-primary">Request early access</a>
+        <a href="#features" class="btn-secondary">See how it works</a>
+      </div>
+
+      <!-- Product preview -->
+      <div class="mock-wrap">
+        <div class="mock-form">
+          <div class="mock-header">
+            <span class="mock-form-name">Customer feedback</span>
+            <div class="mock-progress-wrap">
+              <div class="mock-progress-bar">
+                <div class="mock-progress-fill"></div>
+              </div>
+              <span class="mock-progress-label">1 of 4</span>
+            </div>
+          </div>
+          <div class="mock-body">
+            <div class="mock-q-num">Question 1</div>
+            <div class="mock-question">What issue did you run into?</div>
+            <div class="mock-hint">Answer however is easiest for you.</div>
+            <div class="mock-modes">
+              <div class="mock-mode active">Text</div>
+              <div class="mock-mode">Voice note</div>
+              <div class="mock-mode">Photo</div>
+              <div class="mock-mode">Video</div>
+            </div>
+            <textarea class="mock-input" readonly placeholder="Type your answer here..."></textarea>
+            <div class="mock-footer-row">
+              <button class="mock-btn-next">Next</button>
+            </div>
+          </div>
+        </div>
+        <p class="mock-caption">Responders pick the format. You get the data.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Insight -->
+  <section class="insight">
+    <div class="container">
+      <p class="insight-text">
+        Most form tools were designed when everyone had a keyboard and time to spare.
+        <strong>Your customers send voice notes. Your field staff take photos. Your team members talk, not type.</strong>
+        <span class="dim">The form shouldn't be the thing slowing them down.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Core features -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-label">Core features</div>
+      <div class="feature-grid">
+
+        <div class="feature-cell">
+          <div class="feature-num">01</div>
+          <div class="feature-title">Multi-media answers</div>
+          <p class="feature-desc">One question, any format. Let respondents answer in text, voice, photo, or video — or mix and match. You set what's allowed. They decide what fits. Every response lands in the same structured output.</p>
+        </div>
+
+        <div class="feature-cell">
+          <div class="feature-num">02</div>
+          <div class="feature-title">AI form creation</div>
+          <p class="feature-desc">Describe what you need to collect — in plain language. CraftyForms generates the fields, types, logic, and settings. You refine from there. No starting from a blank canvas.</p>
+        </div>
+
+        <div class="feature-cell">
+          <div class="feature-num">03</div>
+          <div class="feature-title">100% white-labelled</div>
+          <p class="feature-desc">Your logo, your colors, your domain. The form looks and feels like it belongs to your product — because it does. No forced branding, no footnotes, no "powered by" unless you want one.</p>
+        </div>
+
+        <div class="feature-cell">
+          <div class="feature-num">04</div>
+          <div class="feature-title">Past entries</div>
+          <p class="feature-desc">Optionally show respondents their own previous submissions. Useful for recurring check-ins and updates.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Capabilities -->
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-label">Also included</div>
+      <div class="cap-grid">
+
+        <div class="cap-item">
+          <div class="cap-title">Conditional logic</div>
+          <p class="cap-desc">Show, hide, skip, or require fields based on what's been answered so far. Nested conditions supported.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Draft saving</div>
+          <p class="cap-desc">Respondents can save progress and return later. Authenticated users sync to their account. Anonymous users save to local storage.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Works offline</div>
+          <p class="cap-desc">Saves every answer the moment it's entered. When the connection comes back, everything syncs automatically. No lost responses.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Headless mode</div>
+          <p class="cap-desc">Bring your own UI. Use the API to drive form logic and submissions while your frontend renders whatever it wants.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">API &amp; MCP access</div>
+          <p class="cap-desc">Read and write form data programmatically. Build on top of CraftyForms, connect it to anything, or let your AI tools use it directly.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Bot protection</div>
+          <p class="cap-desc">Inbuilt captcha options for all your forms. Keep responses clean without extra setup.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Edit responses</div>
+          <p class="cap-desc">Allow edits to individual responses, or issue shareable edit links. Can be disabled completely.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Data validation</div>
+          <p class="cap-desc">Full REGEX support, custom rules, and the ability to check answers against external data sources before submission.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Custom answer types</div>
+          <p class="cap-desc">Preset types not enough? Define your own and reuse them across all your forms.</p>
+        </div>
+
+      </div>
+      <p class="cap-footnote">Also includes: Embed anywhere &middot; Field prefill &middot; Import &amp; export &middot; Collaborator access &middot; Ready templates</p>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-inner">
+        <div>
+          <div class="section-label">Pricing</div>
+          <div class="pricing-headline">Free for text.<br>Pay for what you actually use.</div>
+          <p class="pricing-sub">Text-based submissions are free, forever. Voice, photo, and video responses use storage — you pay for that at cost, nothing more. Advanced features unlock on paid plans.</p>
+        </div>
+        <div class="pricing-tiers">
+          <div class="pricing-tier">
+            <div class="pricing-tier-name">Free</div>
+            <div class="pricing-tier-desc">Unlimited text-based forms and submissions. Standard branding. Core logic and conditions.</div>
+          </div>
+          <div class="pricing-tier highlight">
+            <div class="pricing-tier-name">Pro</div>
+            <div class="pricing-tier-desc">Everything in Free, plus full white-labelling, media submissions, AI features, and API access. Usage-based pricing on media storage.</div>
+          </div>
+          <div class="pricing-tier">
+            <div class="pricing-tier-name">API &amp; usage-based</div>
+            <div class="pricing-tier-desc">Pay per submission, per API call, or per GB stored. No monthly commitment. Good for bursts.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta" id="early-access">
+    <div class="container">
+      <div class="final-headline">The last form tool<br>you'll need.</div>
+      <p class="final-sub">We're rolling out early access in batches. Leave your email and we'll be in touch.</p>
+      <!-- Replace href with your CraftyForms waitlist form URL -->
+      <a href="#" class="btn-primary">Request early access</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">&copy; 2026 CraftyForms. All rights reserved.</span>
+        <div class="footer-links">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
