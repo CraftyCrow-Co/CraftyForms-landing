@@ -250,7 +250,7 @@
     }
 
     .mock-body {
-      padding: 18px 24px 10px;
+      padding: 0;
     }
 
     .mock-q-num {
@@ -723,16 +723,20 @@
 
           </div>
           <div class="mock-body">
-        <div id="crafty-form-aeddfac7-9eaa-4d99-8fa2-e148888e178a"></div>
-        <script>
-          (function(){
-            var f=document.createElement('iframe');
-            f.src="https://crafty-forms-staging.fly.dev/shared-form/aeddfac7-9eaa-4d99-8fa2-e148888e178aff";
-            f.style="width:100%;height:355px;border:none;border-radius:12px;display:block;";
-            f.setAttribute('loading','lazy');
-            document.getElementById('crafty-form-aeddfac7-9eaa-4d99-8fa2-e148888e178a').appendChild(f);
-          })();
-        </script>
+<div id="crafty-form-aeddfac7-9eaa-4d99-8fa2-e148888e178a"></div>
+<script>
+  (function(){
+    var f = document.createElement('iframe');
+    f.src = "https://crafty-forms-staging.fly.dev/shared-form/aeddfac7-9eaa-4d99-8fa2-e148888e178a";
+    f.style = "width:100%;height:1px;border:none;border-radius:0 0 12px 12px;display:block;overflow:hidden;";
+    f.setAttribute('loading', 'lazy');
+    f.setAttribute('scrolling', 'no');
+    document.getElementById('crafty-form-aeddfac7-9eaa-4d99-8fa2-e148888e178a').appendChild(f);
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.craftyHeight) f.style.height = e.data.craftyHeight + 'px';
+    });
+  })();
+</script>
           </div>
         </div>
         <p class="mock-caption">Responders pick the format. You get the data.</p>
