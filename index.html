@@ -592,6 +592,14 @@
       border-color: var(--accent);
     }
 
+    #tier-pro {
+      border-color: var(--accent);
+    }
+
+    #tier-pro .pricing-tier-name {
+      color: var(--accent);
+    }
+
     /* ── Final CTA ───────────────────────────────── */
 
     .final-cta {
@@ -739,7 +747,7 @@
         <div class="nav-right">
           <a href="#features" class="nav-link">Features</a>
           <a href="#pricing" class="nav-link">Pricing</a>
-          <a href="builders.html" class="nav-link nav-link-switch">For builders →</a>
+          <a href="api.html" class="nav-link nav-link-switch">For builders »</a>
           <a href="https://crafty-forms.fly.dev/" class="nav-cta">Sign in</a>
         </div>
       </div>
@@ -749,12 +757,12 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <div class="hero-label">Now in early access</div>
+      <div class="hero-label">Powerful • Flexible • Simple</div>
       <h1 class="hero-headline">Forms built for how people actually answer</h1>
-      <p class="hero-sub">Text, voice, a photo, a video. Your respondents answer however makes sense to them. You get structured data, your brand, your pipeline.</p>
+      <p class="hero-sub">Text, voice, a photo, a video. Your respondents answer however it makes sense to them. You get structured data, your brand, your pipeline.</p>
       <div class="hero-actions">
         <a href="https://crafty-forms.fly.dev/" class="btn-primary">Get Started</a>
-        <a href="#features" class="btn-secondary">See how it works</a>
+        <a href="#features" class="btn-secondary">See unique features</a>
       </div>
 
       <!-- Product preview -->
@@ -769,7 +777,7 @@
 <script>
   (function(){
     var f = document.createElement('iframe');
-    f.src = "https://crafty-forms-staging.fly.dev/shared-form/aeddfac7-9eaa-4d99-8fa2-e148888e178a";
+    f.src = "https://crafty-forms.fly.dev/shared-form/aeddfac7-9eaa-4d99-8fa2-e148888e178a";
     f.style = "width:100%;height:600px;border:none;border-radius:12px;display:block;";
     f.setAttribute('loading', 'lazy');
     f.setAttribute('allow', 'microphone *; camera *; geolocation *');
@@ -907,9 +915,9 @@
             <div class="pricing-tier-name">Pro</div>
             <div class="pricing-tier-desc">Everything in Free, plus full white-labelling, media submissions, AI features, and API access. Usage-based pricing on media storage.</div>
             <div class="pro-options" id="pro-options">
-              <a href="https://crafty-forms-staging.fly.dev/pricing?tier=payg" class="pro-option">Pay-as-you-go</a>
-              <a href="https://crafty-forms-staging.fly.dev/pricing?tier=20gb" class="pro-option">Flat 20 GB</a>
-              <a href="https://crafty-forms-staging.fly.dev/pricing?tier=50gb" class="pro-option">Flat 50 GB</a>
+              <a href="https://crafty-forms.fly.dev/pricing?tier=payg" class="pro-option">Pay-as-you-go</a>
+              <a href="https://crafty-forms.fly.dev/pricing?tier=20gb" class="pro-option">Flat 20 GB</a>
+              <a href="https://crafty-forms.fly.dev/pricing?tier=50gb" class="pro-option">Flat 50 GB</a>
             </div>
           </div>
           <div class="pricing-tier" id="tier-api">
@@ -980,7 +988,7 @@
     });
 
     document.getElementById('tier-api').addEventListener('click', function() {
-      window.location.href = 'https://crafty-forms-staging.fly.dev/pricing?tier=payg';
+      window.location.href = 'https://crafty-forms.fly.dev/pricing?tier=payg';
     });
   </script>
 
