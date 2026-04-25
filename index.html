@@ -739,6 +739,7 @@
         <div class="nav-right">
           <a href="#features" class="nav-link">Features</a>
           <a href="#pricing" class="nav-link">Pricing</a>
+          <a href="builders.html" class="nav-link nav-link-switch">For builders →</a>
           <a href="#early-access" class="nav-cta">Get early access</a>
         </div>
       </div>
@@ -771,7 +772,7 @@
     f.src = "https://crafty-forms-staging.fly.dev/shared-form/aeddfac7-9eaa-4d99-8fa2-e148888e178a";
     f.style = "width:100%;height:600px;border:none;border-radius:12px;display:block;";
     f.setAttribute('loading', 'lazy');
-    f.setAttribute('allow', 'microphone; camera; geolocation');
+    f.setAttribute('allow', 'microphone *; camera *; geolocation *');
     document.getElementById('crafty-form-aeddfac7-9eaa-4d99-8fa2-e148888e178a').appendChild(f);
     window.addEventListener('message', function(e) {
       if (e.data && e.data.craftyHeight) f.style.height = e.data.craftyHeight + 'px';
@@ -977,7 +978,7 @@
     });
 
     document.getElementById('tier-api').addEventListener('click', function() {
-      window.location.href = 'https://crafty-forms-staging.fly.dev/pricing';
+      window.location.href = 'https://crafty-forms-staging.fly.dev/pricing?tier=payg';
     });
   </script>
 

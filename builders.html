@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CraftyForms — Structured inputs for LLMs</title>
+  <meta name="description" content="CraftyForms captures text, voice, photos, and video. Build forms that let people answer however makes sense to them.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg:         #F7F6F3;
+      --bg-white:   #FFFFFF;
+      --bg-raised:  #EEECEA;
+      --ink:        #161614;
+      --muted:      #989898;
+      --faint:      #9B9A95;
+      --accent:     #C8451B;
+      --accent-bg:  #FDF1ED;
+      --border:     #E3E2DD;
+      --border-mid: #CCCBC6;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── Utilities ──────────────────────────────── */
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Navigation ─────────────────────────────── */
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .logo-dot {
+      color: var(--accent);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.12s;
+    }
+
+    .nav-link:hover {
+      color: var(--ink);
+    }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--bg-white);
+      background: var(--ink);
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: opacity 0.12s;
+    }
+
+    .nav-cta:hover {
+      opacity: 0.75;
+    }
+
+    /* ── Hero ───────────────────────────────────── */
+
+    .hero {
+      padding: 88px 0 80px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-bg);
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 28px;
+    }
+
+    .hero-headline {
+      font-size: clamp(36px, 5.5vw, 68px);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+      max-width: 760px;
+      margin-bottom: 24px;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 1.8vw, 19px);
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 72px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--bg-white);
+      background: var(--accent);
+      padding: 11px 22px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: opacity 0.12s;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid var(--border-mid);
+      padding: 11px 22px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: border-color 0.12s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--muted);
+    }
+
+    /* ── Mock form widget ───────────────────────── */
+
+    .mock-wrap {
+      max-width: 580px;
+    }
+
+    .mock-form {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .mock-form.mock-code {
+      background: #1A1A18;
+      border-color: #2E2E2B;
+    }
+
+    .mock-form.mock-code .mock-header {
+      background: #111110;
+      border-bottom-color: #2E2E2B;
+    }
+
+    .mock-form.mock-code .mock-form-name {
+      color: #9B9A95;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 11px;
+    }
+
+    .mock-form.mock-code .mock-progress-label {
+      color: #4CAF50;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .mock-code-body {
+      padding: 20px 24px 24px;
+    }
+
+    .mock-json {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: #C8C7C2;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .json-key  { color: #C8451B; }
+    .json-str  { color: #A8C97F; }
+    .json-num  { color: #79B8FF; }
+
+    .mock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mock-form-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .mock-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mock-progress-bar {
+      width: 80px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .mock-progress-fill {
+      width: 25%;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+
+    .mock-progress-label {
+      font-size: 11px;
+      color: var(--faint);
+    }
+
+    .mock-body {
+      padding: 28px 24px 20px;
+    }
+
+    .mock-q-num {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--faint);
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    .mock-question {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .mock-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .mock-modes {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .mock-mode {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: default;
+      line-height: 1;
+    }
+
+    .mock-mode.active {
+      color: var(--accent);
+      background: var(--accent-bg);
+      border-color: #E8B8A8;
+    }
+
+    .mock-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--muted);
+      line-height: 1.5;
+      resize: none;
+      height: 80px;
+      margin-bottom: 16px;
+    }
+
+    .mock-footer-row {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .mock-btn-next {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--bg-white);
+      background: var(--ink);
+      border: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      cursor: default;
+    }
+
+    .mock-caption {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--faint);
+      padding-left: 4px;
+    }
+
+    /* ── Insight block ───────────────────────────── */
+
+    .insight {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .insight-text {
+      font-size: clamp(19px, 2.5vw, 26px);
+      font-weight: 400;
+      line-height: 1.55;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      max-width: 740px;
+    }
+
+    .insight-text strong {
+      font-weight: 600;
+    }
+
+    .insight-text .dim {
+      color: var(--muted);
+    }
+
+    /* ── Section label ───────────────────────────── */
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 40px;
+    }
+
+    /* ── Core features ───────────────────────────── */
+
+    .features {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .feature-cell {
+      padding: 36px 32px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s;
+    }
+
+    .feature-cell:nth-child(2n) {
+      border-right: none;
+    }
+
+    .feature-cell:nth-child(3),
+    .feature-cell:nth-child(4) {
+      border-bottom: none;
+    }
+
+    .feature-cell:hover {
+      background: var(--bg-white);
+    }
+
+    .feature-num {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--faint);
+      letter-spacing: 0.05em;
+      margin-bottom: 18px;
+    }
+
+    .feature-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── Capabilities list ───────────────────────── */
+
+    .capabilities {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .cap-item {
+      padding: 24px 26px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cap-item:nth-child(3n) {
+      border-right: none;
+    }
+
+    .cap-item:nth-last-child(-n+3):nth-child(3n+1),
+    .cap-item:nth-last-child(-n+2):nth-child(3n+2),
+    .cap-item:nth-last-child(-n+1):nth-child(3n+3) {
+      border-bottom: none;
+    }
+
+    /* Simpler approach: remove bottom border from last row (9 items × 3 cols = 3 rows; last row starts at 7) */
+    .cap-item:nth-child(n+7) {
+      border-bottom: none;
+    }
+
+    .cap-footnote {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--faint);
+      line-height: 1.6;
+    }
+
+    .cap-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+
+    .cap-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Pricing ─────────────────────────────────── */
+
+    .pricing {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pricing-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .pricing-headline {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .pricing-sub {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .pricing-tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pricing-tier {
+      background: var(--bg-white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .pricing-tier-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .pricing-tier-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .pricing-tier {
+      cursor: pointer;
+      transition: background 0.12s, border-color 0.12s;
+    }
+
+    .pricing-tier:hover {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+    }
+
+    .pricing-tier:hover .pricing-tier-name {
+      color: var(--accent);
+    }
+
+    .pro-options {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      margin-top: 0;
+      transition: max-height 0.3s ease, opacity 0.25s ease, margin-top 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pro-options.open {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: 14px;
+    }
+
+    .pro-option {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--bg-white);
+      border: 1px solid #E8B8A8;
+      border-radius: 6px;
+      padding: 10px 14px;
+      text-decoration: none;
+      transition: background 0.12s, border-color 0.12s;
+    }
+
+    .pro-option:hover {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+    }
+
+    /* ── Final CTA ───────────────────────────────── */
+
+    .final-cta {
+      padding: 96px 0;
+      text-align: center;
+    }
+
+    .final-headline {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .final-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+
+    /* ── Footer ──────────────────────────────────── */
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--faint);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--faint);
+      text-decoration: none;
+      transition: color 0.12s;
+    }
+
+    .footer-links a:hover {
+      color: var(--muted);
+    }
+
+    /* ── API Playground ─────────────────────────────── */
+
+    .playground-wrap {
+      background: #111110;
+      border: 1px solid #2E2E2B;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .pg-tabs {
+      display: flex;
+      border-bottom: 1px solid #2E2E2B;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .pg-tabs::-webkit-scrollbar { display: none; }
+
+    .pg-tab {
+      padding: 13px 20px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      color: #6B6A65;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.12s;
+      letter-spacing: 0.01em;
+    }
+    .pg-tab:hover { color: #C8C7C2; }
+    .pg-tab.active { color: #C8451B; border-bottom-color: #C8451B; }
+    .pg-tab .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-right: 7px;
+    }
+    .badge-post { background: rgba(200,69,27,0.2); color: #C8451B; }
+    .badge-get  { background: rgba(96,165,250,0.15); color: #60A5FA; }
+
+    .pg-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .pg-request {
+      border-right: 1px solid #2E2E2B;
+      padding: 22px 24px 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pg-response {
+      padding: 22px 24px 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pg-panel-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: #989898;
+      margin-bottom: 16px;
+    }
+
+    .pg-method-url {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .pg-method {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 3px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .pg-method.post { background: rgba(200,69,27,0.2); color: #C8451B; }
+    .pg-method.get  { background: rgba(96,165,250,0.15); color: #60A5FA; }
+
+    .pg-url {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      color: #989898;
+      word-break: break-all;
+    }
+
+    .pg-field-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #989898;
+      margin-bottom: 7px;
+      margin-top: 14px;
+    }
+
+    .pg-header-row {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .pg-hk { color: #C8451B; min-width: 132px; flex-shrink: 0; }
+    .pg-hv { color: #989898; }
+
+    .pg-key-input {
+      background: #1A1A18;
+      border: 1px solid #3A3A37;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #C8C7C2;
+      outline: none;
+      width: 210px;
+      max-width: 100%;
+      transition: border-color 0.15s;
+    }
+    .pg-key-input:focus { border-color: #C8451B; }
+    .pg-key-input::placeholder { color: #3A3A37; }
+
+    .pg-body-editor {
+      width: 100%;
+      background: #1A1A18;
+      border: 1px solid #2E2E2B;
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 12.5px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      color: #A8C97F;
+      line-height: 1.65;
+      resize: vertical;
+      min-height: 90px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .pg-body-editor:focus { border-color: #3A3A37; }
+
+    .pg-send {
+      margin-top: 18px;
+      padding: 11px 20px;
+      background: #C8451B;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.12s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .pg-send:hover:not(:disabled) { opacity: 0.85; }
+    .pg-send:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .pg-spinner {
+      width: 13px; height: 13px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: pg-spin 0.7s linear infinite;
+      display: none;
+      flex-shrink: 0;
+    }
+    .pg-send.loading .pg-spinner { display: block; }
+    .pg-send.loading .pg-send-label { opacity: 0.7; }
+
+    @keyframes pg-spin { to { transform: rotate(360deg); } }
+
+    .pg-status-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      min-height: 26px;
+    }
+
+    .pg-status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 3px 9px;
+      border-radius: 4px;
+      display: none;
+    }
+    .pg-status-pill.ok  { background: rgba(74,222,128,0.12); color: #4ADE80; display: inline-block; }
+    .pg-status-pill.err { background: rgba(248,113,113,0.12); color: #F87171; display: inline-block; }
+
+    .pg-time {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #989898;
+      display: none;
+    }
+    .pg-time.show { display: inline; }
+
+    .pg-mock-badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: rgba(155,154,149,0.1);
+      color: #4B4B48;
+      display: none;
+    }
+    .pg-mock-badge.show { display: inline-block; }
+
+    .pg-response-pre {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      line-height: 1.75;
+      color: #989898;
+      white-space: pre;
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 290px;
+      flex: 1;
+    }
+
+    /* JSON syntax colours in response */
+    .rk { color: #C8451B; }
+    .rs { color: #A8C97F; }
+    .rn { color: #79B8FF; }
+    .rb { color: #F9A825; }
+    .rnull { color: #989898; }
+
+    .pg-note {
+      padding: 12px 24px;
+      font-size: 12px;
+      color: #989898;
+      border-top: 1px solid #2E2E2B;
+      line-height: 1.55;
+    }
+    .pg-note a { color: #C8451B; text-decoration: none; }
+    .pg-note a:hover { text-decoration: underline; }
+
+    /* ── Responsive ──────────────────────────────── */
+
+    @media (max-width: 800px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-cell {
+        border-right: none !important;
+      }
+
+      .feature-cell:nth-child(3) {
+        border-bottom: 1px solid var(--border) !important;
+      }
+
+      .feature-cell:last-child {
+        border-bottom: none !important;
+      }
+
+      .cap-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cap-item:nth-child(2n) {
+        border-right: none;
+      }
+
+      .cap-item:nth-child(3n) {
+        border-right: 1px solid var(--border);
+      }
+
+      .cap-item:nth-child(n+7) {
+        border-bottom: 1px solid var(--border);
+      }
+
+      .cap-item:nth-last-child(1),
+      .cap-item:nth-last-child(2) {
+        border-bottom: none;
+      }
+
+      .pricing-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .nav-link:not(.nav-link-switch) {
+        display: none;
+      }
+
+      .pg-panels {
+        grid-template-columns: 1fr;
+      }
+
+      .pg-request {
+        border-right: none;
+        border-bottom: 1px solid #2E2E2B;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .container {
+        padding: 0 20px;
+      }
+
+      .hero {
+        padding: 64px 0 56px;
+      }
+
+      .cap-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cap-item {
+        border-right: none !important;
+        border-bottom: 1px solid var(--border) !important;
+      }
+
+      .cap-item:last-child {
+        border-bottom: none !important;
+      }
+
+      .footer-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <div class="nav-inner">
+        <a href="/" class="logo">Crafty<span class="logo-dot">Forms</span></a>
+        <div class="nav-right">
+          <a href="#features" class="nav-link">Features</a>
+          <a href="#pricing" class="nav-link">Pricing</a>
+          <a href="index.html" class="nav-link nav-link-switch">← For humans</a>
+          <a href="#access" class="nav-cta">Get API access</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-label">For builders</div>
+      <h1 class="hero-headline">The form layer for your AI stack</h1>
+      <p class="hero-sub">Headless, MCP-native, structured output. The form tool your vibe-coded tools deserve. Works however you build, looks however you design.</p>
+      <div class="hero-actions">
+        <a href="#access" class="btn-primary">Get API access</a>
+        <a href="#features" class="btn-secondary">See how it works</a>
+      </div>
+
+      <!-- Live API Playground -->
+      <div class="playground-wrap">
+
+        <!-- Tabs -->
+        <div class="pg-tabs">
+          <button class="pg-tab active" onclick="pgSwitch('create')">
+            <span class="badge badge-post">POST</span>/v1/forms
+          </button>
+          <button class="pg-tab" onclick="pgSwitch('list')">
+            <span class="badge badge-get">GET</span>/v1/forms
+          </button>
+          <button class="pg-tab" onclick="pgSwitch('sub')">
+            <span class="badge badge-get">GET</span>/v1/forms/:id/submissions
+          </button>
+        </div>
+
+        <!-- Panels -->
+        <div class="pg-panels">
+
+          <!-- Request -->
+          <div class="pg-request">
+            <div class="pg-panel-label">REQUEST</div>
+
+            <div class="pg-method-url">
+              <span class="pg-method post" id="pg-method">POST</span>
+              <span class="pg-url" id="pg-url">https://crafty-form-server.fly.dev/v1/forms</span>
+            </div>
+
+            <div class="pg-field-label">HEADERS</div>
+            <div class="pg-header-row">
+              <span class="pg-hk">Content-Type</span>
+              <span class="pg-hv">application/json</span>
+            </div>
+            <div class="pg-header-row">
+              <span class="pg-hk">Authorization</span>
+              <span class="pg-hv">Bearer&nbsp;<input
+                class="pg-key-input"
+                id="pg-key"
+                type="text"
+                placeholder="paste_your_api_key"
+                autocomplete="off"
+                spellcheck="false"
+              /></span>
+            </div>
+
+            <div class="pg-field-label" id="pg-body-label">BODY</div>
+            <textarea class="pg-body-editor" id="pg-body" spellcheck="false">{
+  "prompt": "Contact form with name, email, and message",
+  "publish": true
+}</textarea>
+
+            <button class="pg-send" id="pg-send" onclick="pgSend()">
+              <div class="pg-spinner" id="pg-spinner"></div>
+              <span class="pg-send-label" id="pg-send-label">Send Request →</span>
+            </button>
+          </div>
+
+          <!-- Response -->
+          <div class="pg-response">
+            <div class="pg-panel-label">RESPONSE</div>
+
+            <div class="pg-status-row">
+              <span class="pg-status-pill" id="pg-pill"></span>
+              <span class="pg-time" id="pg-time"></span>
+              <span class="pg-mock-badge" id="pg-mock-badge">EXAMPLE</span>
+            </div>
+
+            <pre class="pg-response-pre" id="pg-pre">// Hit "Send Request" to see a live response.
+// Enter your API key for a real call,
+// or leave it blank for an example.</pre>
+          </div>
+
+        </div>
+
+        <p class="pg-note">
+          Get your key from <a href="https://craftyforms.app/settings" target="_blank">craftyforms.app/settings</a>.
+          No account yet? <a href="#access">Sign up free →</a>
+        </p>
+      </div>
+      <p class="mock-caption">No API key? Leave it blank — we'll show you a realistic example response.</p>
+    </div>
+  </section>
+
+  <!-- Insight -->
+  <section class="insight">
+    <div class="container">
+      <p class="insight-text">
+        AI agents are only as good as their inputs. Right now you're either hardcoding prompts or losing structure in freeform text. 
+        <strong>CraftyForms gives your agent a clean intake surface</strong>
+        <span class="dim"> — text, voice, photo, video — all normalized to the same schema, every time.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Core features -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-label">Core features</div>
+      <div class="feature-grid">
+
+        <div class="feature-cell">
+          <div class="feature-num">01</div>
+          <div class="feature-title">Headless-first</div>
+          <p class="feature-desc">No UI lock-in, no opinions. Pure API. Render your own frontend, wire it to your agent, or skip the interface entirely. The logic, validation, and storage are all handled. You own how it looks and feels.</p>
+        </div>
+
+        <div class="feature-cell">
+          <div class="feature-num">02</div>
+          <div class="feature-title">MCP-native</div>
+          <p class="feature-desc">Your AI tools can read and write form data directly. Claude, Cursor, or anything MCP-compatible can discover your forms, submit responses, and query entries — without you writing a single integration.</p>
+        </div>
+
+        <div class="feature-cell">
+          <div class="feature-num">03</div>
+          <div class="feature-title">Text is 100% free</div>
+          <p class="feature-desc">Every text-based submission is free, forever. No trial limits, no gotchas. Start building real pipelines without touching a credit card. Pay only when you add media.</p>
+        </div>
+
+        <div class="feature-cell">
+          <div class="feature-num">04</div>
+          <div class="feature-title">Multi-Modal by Nature</div>
+          <p class="feature-desc">Not an add-on. Not a workaround. Text, voice, photo, and video are first-class input types — each transcribed, parsed, and returned in the same structured schema. Your pipeline doesn't change. The input method does.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Capabilities -->
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-label">Also included</div>
+      <div class="cap-grid">
+
+        <div class="cap-item">
+          <div class="cap-title">Webhooks &amp; event callbacks</div>
+          <p class="cap-desc">Get notified the moment a response lands. Push to your pipeline, trigger your agent, or fan out to any downstream system. No polling required.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Structured output guarantee</div>
+          <p class="cap-desc">Voice note, photo, or typed text — every response arrives in the same schema. Your code handles one shape of data, always.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Data validation</div>
+          <p class="cap-desc">REGEX, custom rules, and external source checks run before a submission is accepted. Bad data gets rejected before it reaches your pipeline.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">OpenAPI schema</div>
+          <p class="cap-desc">Full spec published and always up to date. Drop it into your IDE, your agent, or your API client and start building immediately.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Field prefill via params</div>
+          <p class="cap-desc">Pass context in from your agent or app via URL params or API. Pre-populate fields so respondents only answer what's actually unknown.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Edit responses &amp; audit trail</div>
+          <p class="cap-desc">Correct a submission after the fact, issue shareable edit links, and trace every change. Pipelines need to recover from bad inputs — this is how.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Offline sync &amp; auto-retry</div>
+          <p class="cap-desc">Every answer is saved the moment it's entered. When the connection returns, everything syncs automatically. No lost responses, no manual retry logic.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Sandbox &amp; test mode</div>
+          <p class="cap-desc">A fully isolated environment for development. Submit test responses, inspect the schema, and break things safely before going to production.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Rate limiting &amp; quota controls</div>
+          <p class="cap-desc">Set per-form or per-key submission limits. Protect your pipeline from runaway agents, unexpected spikes, or accidental loops.</p>
+        </div>
+
+      </div>
+      <p class="cap-footnote">Also includes: Draft saving · Bot protection · Conditional logic · Collaborator access · Response deduplication · Import &amp; export · Embed anywhere · Ready templates</p>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="pricing-inner">
+        <div>
+          <div class="section-label">Pricing</div>
+          <div class="pricing-headline">API-first pricing.<br>No seats. No nonsense.</div>
+          <p class="pricing-sub">Text submissions are free, forever. Media uses storage — you pay for that at cost. Advanced features and MCP access unlock on paid plans.</p>
+        </div>
+        <div class="pricing-tiers">
+          <div class="pricing-tier" id="tier-free">
+            <div class="pricing-tier-name">Free</div>
+            <div class="pricing-tier-desc">Unlimited text-based submissions via API. Full headless access. Core logic and conditions. No credit card required.</div>
+          </div>
+          <div class="pricing-tier" id="tier-pro">
+            <div class="pricing-tier-name">Pro</div>
+            <div class="pricing-tier-desc">Everything in Free, plus MCP access, media submissions, AI features, white-labelling, and priority support. Usage-based on media storage.</div>
+            <div class="pro-options" id="pro-options">
+              <a href="https://crafty-forms-staging.fly.dev/pricing?tier=payg" class="pro-option">Pay-as-you-go</a>
+              <a href="https://crafty-forms-staging.fly.dev/pricing?tier=20gb" class="pro-option">Flat 20 GB</a>
+              <a href="https://crafty-forms-staging.fly.dev/pricing?tier=50gb" class="pro-option">Flat 50 GB</a>
+            </div>
+          </div>
+          <div class="pricing-tier" id="tier-api">
+            <div class="pricing-tier-name">API &amp; usage-based</div>
+            <div class="pricing-tier-desc">Pay per submission, per API call, or per GB stored. No monthly commitment. Built for pipelines that burst.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta" id="access">
+    <div class="container">
+      <div class="final-headline">The intake layer<br>your stack was missing.</div>
+      <p class="final-sub">API access is live. Sign up and start building today.</p>
+      <a href="#" class="btn-primary">Get API access</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">&copy; 2026 CraftyForms. All rights reserved.</span>
+        <div class="footer-links">
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const SERVER = 'https://crafty-form-server.fly.dev';
+
+    // ── Static mock data for GET tabs ──────────────────────────────────────────
+    const TABS = {
+      create: {
+        method: 'POST', path: '/v1/forms', methodClass: 'post', hasBody: true,
+        defaultBody: JSON.stringify({ prompt: "Contact form with name, email, and message", publish: true }, null, 2),
+        mock: { status: 201, ms: 380 }   // body is generated dynamically from the prompt
+      },
+      list: {
+        method: 'GET', path: '/v1/forms', methodClass: 'get', hasBody: false,
+        mock: {
+          status: 200, ms: 160,
+          body: {
+            forms: [
+              { id: "form_a3f8", title: "Contact Form",    status: "published", submission_count: 14, created_at: "2026-04-20T09:12:00Z" },
+              { id: "form_b2c1", title: "Job Application", status: "published", submission_count: 7,  created_at: "2026-04-18T14:30:00Z" },
+              { id: "form_c9d4", title: "Product Feedback",status: "draft",     submission_count: 0,  created_at: "2026-04-23T11:00:00Z" }
+            ],
+            total: 3
+          }
+        }
+      },
+      sub: {
+        method: 'GET', path: '/v1/forms/:id/submissions', methodClass: 'get', hasBody: false,
+        mock: {
+          status: 200, ms: 230,
+          body: {
+            submissions: [
+              { id: "sub_7e2f", data: { "Full Name": "Alex Chen",  "Email": "alex@example.com",  "Message": "Excited to integrate this."           }, submitted_at: "2026-04-24T08:15:00Z" },
+              { id: "sub_8b3a", data: { "Full Name": "Priya Nair", "Email": "priya@example.com", "Message": "Works great with our Claude agent."   }, submitted_at: "2026-04-23T16:45:00Z" },
+              { id: "sub_9c1d", data: { "Full Name": "Marcus Webb","Email": "m@example.com",     "Message": "Clean schema, exactly what I needed." }, submitted_at: "2026-04-22T11:30:00Z" }
+            ],
+            total: 3
+          }
+        }
+      }
+    };
+
+    // ── Dynamic mock generator for POST /v1/forms ──────────────────────────────
+    //
+    // Parses the prompt text and infers a title + field list so the example
+    // response reflects whatever the developer actually typed in the body editor.
+
+    const FIELD_RULES = [
+      // Each rule: { re: RegExp, label, type, required }
+      // Rules are checked in order; first match wins per label.
+      { re: /\b(full[- ]?name|your name|respondent'?s? name|customer name|participant name)\b/i, label: 'Full Name',       type: 'text',     required: true  },
+      { re: /\bfirst[- ]?name\b/i,                   label: 'First Name',         type: 'text',     required: true  },
+      { re: /\blast[- ]?name\b|\bsurname\b/i,         label: 'Last Name',          type: 'text',     required: false },
+      { re: /\b(name)\b/i,                            label: 'Full Name',          type: 'text',     required: true  },
+      { re: /\b(e-?mail|email[- ]?address)\b/i,       label: 'Email Address',      type: 'text',     required: true  },
+      { re: /\b(phone|mobile|telephone|cell)\b/i,     label: 'Phone Number',       type: 'text',     required: false },
+      { re: /\b(company|organisation|organization|employer|business)\b/i, label: 'Company', type: 'text', required: false },
+      { re: /\b(job[- ]?title|position|role|designation)\b/i, label: 'Job Title', type: 'text',     required: false },
+      { re: /\b(subject|topic|reason|purpose|inquiry|enquiry)\b/i, label: 'Subject', type: 'text',  required: false },
+      { re: /\b(website|portfolio|linkedin)\b/i,      label: 'Website',            type: 'text',     required: false },
+      { re: /\b(country|region)\b/i,                  label: 'Country',            type: 'text',     required: false },
+      { re: /\bcity\b/i,                               label: 'City',               type: 'text',     required: false },
+      { re: /\b(date[- ]?of[- ]?birth|birthday|dob)\b/i, label: 'Date of Birth',  type: 'date',     required: false },
+      { re: /\b(preferred[- ]?date|appointment[- ]?date|event[- ]?date|deadline|date)\b/i, label: 'Date', type: 'date', required: false },
+      { re: /\b(street[- ]?address|mailing[- ]?address|address)\b/i, label: 'Address', type: 'textarea', required: false },
+      { re: /\b(message|comments?)\b/i,               label: 'Message',            type: 'textarea', required: false },
+      { re: /\b(feedback)\b/i,                        label: 'Feedback',           type: 'textarea', required: false },
+      { re: /\b(description|details|explain|project[- ]?desc)\b/i, label: 'Description', type: 'textarea', required: false },
+      { re: /\b(cover[- ]?letter)\b/i,                label: 'Cover Letter',       type: 'textarea', required: false },
+      { re: /\b(notes?|anything[- ]?else|other[- ]?info)\b/i, label: 'Additional Notes', type: 'textarea', required: false },
+      { re: /\b(resume|cv|curriculum[- ]?vitae)\b/i,  label: 'Resume / CV',        type: 'file',     required: true  },
+      { re: /\b(attachment|upload|file[- ]?upload)\b/i, label: 'Attachment',       type: 'file',     required: false },
+      { re: /\b(photo|image|picture|screenshot)\b/i,  label: 'Photo',              type: 'file',     required: false },
+      { re: /\byears?[- ]?of[- ]?experience\b/i,      label: 'Years of Experience',type: 'number',   required: false },
+      { re: /\bage\b/i,                                label: 'Age',                type: 'number',   required: false },
+      { re: /\b(budget|price|amount|cost)\b/i,         label: 'Budget',             type: 'number',   required: false },
+      { re: /\b(number[- ]?of[- ]?guests?|guests?|attendees?|participants?)\b/i, label: 'Number of Guests', type: 'number', required: false },
+      { re: /\b(quantity|qty)\b/i,                     label: 'Quantity',           type: 'number',   required: false },
+      { re: /\b(rating|satisfaction|stars?[- ]?rating|score)\b/i, label: 'Rating (1–5)', type: 'scale', required: false },
+      { re: /\b(dietary[- ]?requirements?|allergies|food[- ]?preference)\b/i, label: 'Dietary Requirements', type: 'choice', required: false },
+      { re: /\b(department|team|category|type)\b/i,   label: 'Category',           type: 'choice',   required: false },
+      { re: /\b(gender|sex)\b/i,                       label: 'Gender',             type: 'choice',   required: false },
+      { re: /\b(how[- ]?did[- ]?you[- ]?hear|referral[- ]?source)\b/i, label: 'How did you hear about us?', type: 'choice', required: false },
+      { re: /\b(availability|available[- ]?date|schedule)\b/i, label: 'Availability', type: 'text', required: false },
+      { re: /\b(terms|consent|agree|accept|privacy[- ]?policy|gdpr)\b/i, label: 'I agree to the terms & conditions', type: 'boolean', required: true },
+      { re: /\b(would[- ]?you[- ]?recommend|nps|net[- ]?promoter)\b/i, label: 'Would you recommend us?', type: 'boolean', required: false },
+    ];
+
+    function extractTitle(rawPrompt) {
+      // Strip leading action phrases: "Create a ...", "Build an ...", "Make a ...", "I need a ..."
+      let t = rawPrompt.replace(/^(please\s+)?(create|build|make|generate|design|add|write|i need|give me)\s+(a|an)\s+/i, '').trim();
+      // Cut off at connector words that start the field list
+      const cut = t.match(/^(.+?)\s+(?:with\b|for\b|that\b|which\b|to\s+collect\b|to\s+capture\b|including\b|containing\b|having\b)/i);
+      if (cut) t = cut[1].trim();
+      // Capitalise first letter
+      return t.charAt(0).toUpperCase() + t.slice(1);
+    }
+
+    // Deterministic short hash so the form ID doesn't change on re-render
+    function strHash(s) {
+      let h = 0x811c9dc5;
+      for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 0x01000193) >>> 0;
+      return (h >>> 0).toString(16).slice(0, 6);
+    }
+
+    function generateMockBody(bodyText) {
+      let parsed = {};
+      try { parsed = JSON.parse(bodyText); } catch (_) {}
+
+      const promptRaw = (typeof parsed.prompt === 'string' && parsed.prompt.trim())
+        ? parsed.prompt.trim()
+        : (bodyText || '').replace(/[{}"]/g, ' ');
+      const publish = parsed.publish !== false;
+
+      const title = extractTitle(promptRaw);
+      const fields = [];
+      let fIdx = 1;
+
+      for (const rule of FIELD_RULES) {
+        if (rule.re.test(promptRaw)) {
+          // Skip duplicates (e.g. "name" rule fires after "full name" rule)
+          if (!fields.some(f => f.label === rule.label)) {
+            fields.push({ id: 'f' + fIdx++, label: rule.label, type: rule.type, required: rule.required });
+          }
+        }
+      }
+
+      // Fallback if nothing matched
+      if (fields.length === 0) {
+        fields.push({ id: 'f1', label: 'Full Name',      type: 'text',     required: true  });
+        fields.push({ id: 'f2', label: 'Email Address',  type: 'text',     required: true  });
+        fields.push({ id: 'f3', label: 'Message',        type: 'textarea', required: false });
+      }
+
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+      const hash = strHash(promptRaw.toLowerCase());
+
+      return {
+        id: 'form_' + hash,
+        title: title,
+        status: publish ? 'published' : 'draft',
+        fields: fields,
+        share_url: publish ? ('https://craftyforms.app/f/' + slug) : null,
+        submission_count: 0,
+        created_at: new Date().toISOString()
+      };
+    }
+
+    function getMockBody(tabId) {
+      if (tabId === 'create') return generateMockBody(document.getElementById('pg-body').value);
+      return TABS[tabId].mock.body;
+    }
+
+    // ── UI helpers ─────────────────────────────────────────────────────────────
+
+    let currentTab = 'create';
+
+    function pgSwitch(id) {
+      currentTab = id;
+      const tab = TABS[id];
+
+      document.querySelectorAll('.pg-tab').forEach((el, i) => {
+        el.classList.toggle('active', ['create','list','sub'][i] === id);
+      });
+
+      const methodEl = document.getElementById('pg-method');
+      methodEl.textContent = tab.method;
+      methodEl.className   = 'pg-method ' + tab.methodClass;
+      document.getElementById('pg-url').textContent = SERVER + tab.path;
+
+      const bodyLabel = document.getElementById('pg-body-label');
+      const bodyEl    = document.getElementById('pg-body');
+      if (tab.hasBody) {
+        bodyLabel.style.display = '';
+        bodyEl.style.display    = '';
+        bodyEl.value            = tab.defaultBody || '';
+      } else {
+        bodyLabel.style.display = 'none';
+        bodyEl.style.display    = 'none';
+      }
+
+      pgReset();
+    }
+
+    function pgReset() {
+      const pill = document.getElementById('pg-pill');
+      const time = document.getElementById('pg-time');
+      const mock = document.getElementById('pg-mock-badge');
+      const pre  = document.getElementById('pg-pre');
+      pill.className   = 'pg-status-pill';
+      pill.textContent = '';
+      time.className   = 'pg-time';
+      mock.className   = 'pg-mock-badge';
+      pre.innerHTML    = '// Hit "Send Request" to see a live response.\n// Enter your API key for a real call,\n// or leave it blank for an example.';
+    }
+
+    function syntaxHL(obj) {
+      return JSON.stringify(obj, null, 2)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"([^"]+)"(?=\s*:)/g,   '<span class="rk">"$1"</span>')
+        .replace(/:\s*"([^"]*)"/g,        (_, v) => ': <span class="rs">"' + v + '"</span>')
+        .replace(/:\s*(\d+(\.\d+)?)/g,   (_, v) => ': <span class="rn">' + v + '</span>')
+        .replace(/:\s*(true|false)\b/g,   (_, v) => ': <span class="rb">' + v + '</span>')
+        .replace(/:\s*(null)\b/g,         ()     => ': <span class="rnull">null</span>');
+    }
+
+    function pgShowResponse(status, ms, body, isMock) {
+      const ok = status >= 200 && status < 300;
+      const pill = document.getElementById('pg-pill');
+      pill.textContent = status + (ok ? ' OK' : ' Error');
+      pill.className   = 'pg-status-pill ' + (ok ? 'ok' : 'err');
+
+      const time = document.getElementById('pg-time');
+      time.textContent = ms + ' ms';
+      time.className   = 'pg-time show';
+
+      if (isMock) document.getElementById('pg-mock-badge').className = 'pg-mock-badge show';
+
+      document.getElementById('pg-pre').innerHTML = syntaxHL(body);
+    }
+
+    async function pgSend() {
+      const tab     = TABS[currentTab];
+      const keyVal  = document.getElementById('pg-key').value.trim();
+      const sendBtn = document.getElementById('pg-send');
+      const spinner = document.getElementById('pg-spinner');
+      const label   = document.getElementById('pg-send-label');
+
+      sendBtn.disabled = true;
+      sendBtn.classList.add('loading');
+      spinner.style.display = 'block';
+      label.textContent = 'Sending…';
+      pgReset();
+
+      const startMs = Date.now();
+
+      if (!keyVal) {
+        // No API key — generate the mock body fresh from the current body editor content
+        const mockBody = getMockBody(currentTab);
+        await new Promise(r => setTimeout(r, tab.mock.ms + Math.floor(Math.random() * 80)));
+        pgShowResponse(tab.mock.status, tab.mock.ms, mockBody, true);
+      } else {
+        // Real request to the live server
+        try {
+          const opts = {
+            method: tab.method,
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + keyVal },
+          };
+          if (tab.hasBody) opts.body = document.getElementById('pg-body').value;
+          const res     = await fetch(SERVER + tab.path, opts);
+          const elapsed = Date.now() - startMs;
+          let json;
+          try { json = await res.json(); } catch (_) { json = { error: 'Non-JSON response' }; }
+          pgShowResponse(res.status, elapsed, json, false);
+        } catch (err) {
+          const elapsed = Date.now() - startMs;
+          pgShowResponse(0, elapsed, { error: err.message || 'Network error — check CORS or network.' }, false);
+          document.getElementById('pg-pill').className   = 'pg-status-pill err';
+          document.getElementById('pg-pill').textContent = 'Error';
+        }
+      }
+
+      sendBtn.disabled = false;
+      sendBtn.classList.remove('loading');
+      spinner.style.display = 'none';
+      label.textContent = 'Send Request →';
+    }
+
+    pgSwitch('create');
+
+    document.getElementById('tier-free').addEventListener('click', function() {
+      window.location.href = 'https://crafty-forms.fly.dev';
+    });
+
+    document.getElementById('tier-pro').addEventListener('click', function(e) {
+      if (e.target.closest('.pro-option')) return;
+      document.getElementById('pro-options').classList.toggle('open');
+    });
+
+    document.getElementById('tier-api').addEventListener('click', function() {
+      window.location.href = 'https://test.checkout.dodopayments.com/session/cks_0NdRYfa7pmPMZGP0ngwUm';
+    });
+  </script>
+</body>
+</html>
