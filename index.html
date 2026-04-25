@@ -543,12 +543,53 @@
       line-height: 1.55;
     }
 
-    .pricing-tier.highlight {
+    .pricing-tier {
+      cursor: pointer;
+      transition: background 0.12s, border-color 0.12s;
+    }
+
+    .pricing-tier:hover {
+      background: var(--accent-bg);
       border-color: var(--accent);
     }
 
-    .pricing-tier.highlight .pricing-tier-name {
+    .pricing-tier:hover .pricing-tier-name {
       color: var(--accent);
+    }
+
+    .pro-options {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      margin-top: 0;
+      transition: max-height 0.3s ease, opacity 0.25s ease, margin-top 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pro-options.open {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: 14px;
+    }
+
+    .pro-option {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--bg-white);
+      border: 1px solid #E8B8A8;
+      border-radius: 6px;
+      padding: 10px 14px;
+      text-decoration: none;
+      transition: background 0.12s, border-color 0.12s;
+    }
+
+    .pro-option:hover {
+      background: var(--accent-bg);
+      border-color: var(--accent);
     }
 
     /* ── Final CTA ───────────────────────────────── */
@@ -728,9 +769,9 @@
   (function(){
     var f = document.createElement('iframe');
     f.src = "https://crafty-forms-staging.fly.dev/shared-form/aeddfac7-9eaa-4d99-8fa2-e148888e178a";
-    f.style = "width:100%;height:1px;border:none;border-radius:0 0 12px 12px;display:block;overflow:hidden;";
+    f.style = "width:100%;height:600px;border:none;border-radius:12px;display:block;";
     f.setAttribute('loading', 'lazy');
-    f.setAttribute('scrolling', 'no');
+    f.setAttribute('allow', 'microphone; camera; geolocation');
     document.getElementById('crafty-form-aeddfac7-9eaa-4d99-8fa2-e148888e178a').appendChild(f);
     window.addEventListener('message', function(e) {
       if (e.data && e.data.craftyHeight) f.style.height = e.data.craftyHeight + 'px';
@@ -848,7 +889,39 @@
   <!-- Pricing -->
   <section class="pricing" id="pricing">
     <div class="container">
+
       <div class="pricing-inner">
+        <div>
+          <div class="section-label">Pricing</div>
+          <div class="pricing-headline">Free for text.<br>Pay for what you actually use.</div>
+          <p class="pricing-sub">Text-based submissions are free, forever. Voice, photo, and video responses use storage — you pay for that at cost, nothing more. Advanced features unlock on paid plans.</p>
+        </div>
+        <div class="pricing-tiers">
+          <div class="pricing-tier" id="tier-free">
+            <div class="pricing-tier-name">Free</div>
+            <div class="pricing-tier-desc">Unlimited text-based forms and submissions. Standard branding. Core logic and conditions.</div>
+          </div>
+          <div class="pricing-tier" id="tier-pro">
+            <div class="pricing-tier-name">Pro</div>
+            <div class="pricing-tier-desc">Everything in Free, plus full white-labelling, media submissions, AI features, and API access. Usage-based pricing on media storage.</div>
+            <div class="pro-options" id="pro-options">
+              <a href="https://crafty-forms-staging.fly.dev/pricing?tier=payg" class="pro-option">Pay-as-you-go</a>
+              <a href="https://crafty-forms-staging.fly.dev/pricing?tier=20gb" class="pro-option">Flat 20 GB</a>
+              <a href="https://crafty-forms-staging.fly.dev/pricing?tier=50gb" class="pro-option">Flat 50 GB</a>
+            </div>
+          </div>
+          <div class="pricing-tier" id="tier-api">
+            <div class="pricing-tier-name">API &amp; usage-based</div>
+            <div class="pricing-tier-desc">Pay per submission, per API call, or per GB stored. No monthly commitment. Good for bursts.</div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <!-- <div class="pricing-inner">
         <div>
           <div class="section-label">Pricing</div>
           <div class="pricing-headline">Free for text.<br>Pay for what you actually use.</div>
@@ -866,7 +939,7 @@
             })();
           </script>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 
@@ -892,6 +965,21 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    document.getElementById('tier-free').addEventListener('click', function() {
+      window.location.href = 'https://crafty-forms.fly.dev';
+    });
+
+    document.getElementById('tier-pro').addEventListener('click', function(e) {
+      if (e.target.closest('.pro-option')) return;
+      document.getElementById('pro-options').classList.toggle('open');
+    });
+
+    document.getElementById('tier-api').addEventListener('click', function() {
+      window.location.href = 'https://crafty-forms-staging.fly.dev/pricing';
+    });
+  </script>
 
 </body>
 </html>
