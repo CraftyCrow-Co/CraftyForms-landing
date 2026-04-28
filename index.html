@@ -557,6 +557,7 @@
       color: var(--accent);
     }
 
+
     .pro-options {
       max-height: 0;
       overflow: hidden;
@@ -789,8 +790,13 @@
 </script>
           </div>
         </div>
-        <p class="mock-caption">Responders pick the format. You get the data. Try it out no data will leave your browser.
-</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:0 4px;">
+          <p class="mock-caption" style="margin-top:0;">Responders pick the format. You get the data. Try it — no data leaves your browser.</p>
+          <a href="https://crafty-forms.fly.dev" style="display:flex;align-items:center;gap:6px;text-decoration:none;flex-shrink:0;margin-left:16px;">
+            <span style="font-size:11px;font-weight:500;color:var(--faint);">Built with</span>
+            <span style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:-0.01em;">Crafty<span style="color:var(--accent);">Forms</span></span>
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -900,7 +906,7 @@
   <section class="pricing" id="pricing">
     <div class="container">
 
-      <div class="pricing-inner">
+      <!-- <div class="pricing-inner">
         <div>
           <div class="section-label">Pricing</div>
           <div class="pricing-headline">Free for text.<br>Pay for what you actually use.</div>
@@ -915,23 +921,27 @@
             <div class="pricing-tier-name">Pro</div>
             <div class="pricing-tier-desc">Everything in Free, plus full white-labelling, media submissions, AI features, and API access. Usage-based pricing on media storage.</div>
             <div class="pro-options" id="pro-options">
-              <a href="https://crafty-forms.fly.dev/pricing?tier=payg" class="pro-option">Pay-as-you-go</a>
-              <a href="https://crafty-forms.fly.dev/pricing?tier=20gb" class="pro-option">Flat 20 GB</a>
-              <a href="https://crafty-forms.fly.dev/pricing?tier=50gb" class="pro-option">Flat 50 GB</a>
+              <a href="https://crafty-forms.fly.dev/plans?tier=payg" class="pro-option">Pay-as-you-go (~$5/mo)</a>
+              <a href="https://crafty-forms.fly.dev/plans?tier=20gb" class="pro-option">Flat 20 GB ($15/mo)</a>
+              <a href="https://crafty-forms.fly.dev/plans?tier=50gb" class="pro-option">Flat 50 GB ($30/mo)</a>
             </div>
           </div>
           <div class="pricing-tier" id="tier-api">
             <div class="pricing-tier-name">API &amp; usage-based</div>
-            <div class="pricing-tier-desc">Pay per submission, per API call, or per GB stored. No monthly commitment. Good for bursts.</div>
+            <div class="pricing-tier-desc">Unlimited API & MCP calls. Pay only for what you use — no monthly commitment, no caps.</div>
+          </div>
+          <div class="pricing-tier" id="tier-enterprise">
+            <div class="pricing-tier-name">Enterprise</div>
+            <div class="pricing-tier-desc">Dedicated infrastructure, SSO, custom SLA, and a dedicated account manager. Custom quote.</div>
           </div>
         </div>
-      </div>
+      </div> -->
 
 
 
 
 
-      <!-- <div class="pricing-inner">
+      <div class="pricing-inner">
         <div>
           <div class="section-label">Pricing</div>
           <div class="pricing-headline">Free for text.<br>Pay for what you actually use.</div>
@@ -942,14 +952,20 @@
           <script>
             (function(){
               var f=document.createElement('iframe');
-              f.src="https://crafty-forms-staging.fly.dev/shared-form/8001c975-d311-490e-934a-a5cc05b29b0f";
+              f.src="https://crafty-forms.fly.dev/shared-form/8001c975-d311-490e-934a-a5cc05b29b0fff";
               f.style="width:580px;height:480px;border:none;border-radius:12px;display:block;";
               f.setAttribute('loading','lazy');
               document.getElementById('crafty-form-8001c975-d311-490e-934a-a5cc05b29b0f').appendChild(f);
             })();
           </script>
+          <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:10px;padding:0 4px;">
+            <a href="https://crafty-forms.fly.dev" style="display:flex;align-items:center;gap:6px;text-decoration:none;">
+              <span style="font-size:11px;font-weight:500;color:var(--faint);">Built with</span>
+              <span style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:-0.01em;">Crafty<span style="color:var(--accent);">Forms</span></span>
+            </a>
+          </div>
         </div>
-      </div> -->
+      </div>
     </div>
   </section>
 
@@ -988,7 +1004,11 @@
     });
 
     document.getElementById('tier-api').addEventListener('click', function() {
-      window.location.href = 'https://crafty-forms.fly.dev/pricing?tier=payg';
+      window.location.href = 'https://crafty-forms.fly.dev/plans?plan=api';
+    });
+
+    document.getElementById('tier-enterprise').addEventListener('click', function() {
+      window.location.href = 'https://crafty-forms.fly.dev/plans?plan=enterprise';
     });
   </script>
 
