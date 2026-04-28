@@ -739,8 +739,10 @@
       border-radius: 3px;
       margin-right: 7px;
     }
-    .badge-post { background: rgba(200,69,27,0.2); color: #C8451B; }
-    .badge-get  { background: rgba(96,165,250,0.15); color: #60A5FA; }
+    .badge-post   { background: rgba(200,69,27,0.2);   color: #C8451B; }
+    .badge-get    { background: rgba(96,165,250,0.15);  color: #60A5FA; }
+    .badge-patch  { background: rgba(251,191,36,0.15);  color: #FBBF24; }
+    .badge-delete { background: rgba(248,113,113,0.12); color: #F87171; }
 
     .pg-panels {
       display: grid;
@@ -784,8 +786,10 @@
       border-radius: 4px;
       flex-shrink: 0;
     }
-    .pg-method.post { background: rgba(200,69,27,0.2); color: #C8451B; }
-    .pg-method.get  { background: rgba(96,165,250,0.15); color: #60A5FA; }
+    .pg-method.post   { background: rgba(200,69,27,0.2);   color: #C8451B; }
+    .pg-method.get    { background: rgba(96,165,250,0.15);  color: #60A5FA; }
+    .pg-method.patch  { background: rgba(251,191,36,0.15);  color: #FBBF24; }
+    .pg-method.delete { background: rgba(248,113,113,0.12); color: #F87171; }
 
     .pg-url {
       font-size: 12px;
@@ -1069,14 +1073,50 @@
 
         <!-- Tabs -->
         <div class="pg-tabs">
-          <button class="pg-tab active" onclick="pgSwitch('create')">
+          <button class="pg-tab active" data-tab="create" onclick="pgSwitch('create')">
             <span class="badge badge-post">POST</span>/v1/forms
           </button>
-          <button class="pg-tab" onclick="pgSwitch('list')">
+          <button class="pg-tab" data-tab="list" onclick="pgSwitch('list')">
             <span class="badge badge-get">GET</span>/v1/forms
           </button>
-          <button class="pg-tab" onclick="pgSwitch('sub')">
+          <button class="pg-tab" data-tab="getForm" onclick="pgSwitch('getForm')">
+            <span class="badge badge-get">GET</span>/v1/forms/:id
+          </button>
+          <button class="pg-tab" data-tab="patchForm" onclick="pgSwitch('patchForm')">
+            <span class="badge badge-patch">PATCH</span>/v1/forms/:id
+          </button>
+          <button class="pg-tab" data-tab="deleteForm" onclick="pgSwitch('deleteForm')">
+            <span class="badge badge-delete">DELETE</span>/v1/forms/:id
+          </button>
+          <button class="pg-tab" data-tab="publish" onclick="pgSwitch('publish')">
+            <span class="badge badge-post">POST</span>/v1/forms/:id/publish
+          </button>
+          <button class="pg-tab" data-tab="close" onclick="pgSwitch('close')">
+            <span class="badge badge-post">POST</span>/v1/forms/:id/close
+          </button>
+          <button class="pg-tab" data-tab="link" onclick="pgSwitch('link')">
+            <span class="badge badge-get">GET</span>/v1/forms/:id/link
+          </button>
+          <button class="pg-tab" data-tab="sub" onclick="pgSwitch('sub')">
             <span class="badge badge-get">GET</span>/v1/forms/:id/submissions
+          </button>
+          <button class="pg-tab" data-tab="createSub" onclick="pgSwitch('createSub')">
+            <span class="badge badge-post">POST</span>/v1/forms/:id/submissions
+          </button>
+          <button class="pg-tab" data-tab="waitSub" onclick="pgSwitch('waitSub')">
+            <span class="badge badge-get">GET</span>/v1/forms/:id/submissions/wait
+          </button>
+          <button class="pg-tab" data-tab="getSub" onclick="pgSwitch('getSub')">
+            <span class="badge badge-get">GET</span>/v1/submissions/:sid
+          </button>
+          <button class="pg-tab" data-tab="account" onclick="pgSwitch('account')">
+            <span class="badge badge-get">GET</span>/v1/account
+          </button>
+          <button class="pg-tab" data-tab="tokens" onclick="pgSwitch('tokens')">
+            <span class="badge badge-get">GET</span>/v1/account/tokens
+          </button>
+          <button class="pg-tab" data-tab="createToken" onclick="pgSwitch('createToken')">
+            <span class="badge badge-post">POST</span>/v1/account/tokens
           </button>
         </div>
 
@@ -1106,6 +1146,20 @@
                 placeholder="paste_your_api_key"
                 autocomplete="off"
                 spellcheck="false"
+              /></span>
+            </div>
+
+            <div class="pg-field-label" id="pg-param-label" style="display:none">FORM ID</div>
+            <div class="pg-header-row" id="pg-param-row" style="display:none">
+              <span class="pg-hk" id="pg-param-key">:id</span>
+              <span class="pg-hv"><input
+                class="pg-key-input"
+                id="pg-param-input"
+                type="text"
+                placeholder="form_a3f8"
+                autocomplete="off"
+                spellcheck="false"
+                style="width:160px"
               /></span>
             </div>
 
@@ -1305,29 +1359,87 @@
   <script>
     const SERVER = 'https://crafty-form-server.fly.dev';
 
-    // ── Static mock data for GET tabs ──────────────────────────────────────────
+    // ── All endpoint tabs ──────────────────────────────────────────────────────
     const TABS = {
       create: {
-        method: 'POST', path: '/v1/forms', methodClass: 'post', hasBody: true,
+        method: 'POST', path: '/v1/forms', methodClass: 'post', hasBody: true, hasParam: false,
         defaultBody: JSON.stringify({ prompt: "Contact form with name, email, and message", publish: true }, null, 2),
-        mock: { status: 201, ms: 380 }   // body is generated dynamically from the prompt
+        mock: { status: 201, ms: 380 }
       },
       list: {
-        method: 'GET', path: '/v1/forms', methodClass: 'get', hasBody: false,
+        method: 'GET', path: '/v1/forms', methodClass: 'get', hasBody: false, hasParam: false,
         mock: {
           status: 200, ms: 160,
           body: {
             forms: [
-              { id: "form_a3f8", title: "Contact Form",    status: "published", submission_count: 14, created_at: "2026-04-20T09:12:00Z" },
-              { id: "form_b2c1", title: "Job Application", status: "published", submission_count: 7,  created_at: "2026-04-18T14:30:00Z" },
-              { id: "form_c9d4", title: "Product Feedback",status: "draft",     submission_count: 0,  created_at: "2026-04-23T11:00:00Z" }
+              { id: "form_a3f8", title: "Contact Form",     status: "published", submission_count: 14, created_at: "2026-04-20T09:12:00Z" },
+              { id: "form_b2c1", title: "Job Application",  status: "published", submission_count: 7,  created_at: "2026-04-18T14:30:00Z" },
+              { id: "form_c9d4", title: "Product Feedback", status: "draft",     submission_count: 0,  created_at: "2026-04-23T11:00:00Z" }
             ],
             total: 3
           }
         }
       },
+      getForm: {
+        method: 'GET', path: '/v1/forms/:id', methodClass: 'get', hasBody: false, hasParam: true,
+        mock: {
+          status: 200, ms: 120,
+          body: {
+            id: "form_a3f8", title: "Contact Form", status: "published", slug: "contact-form",
+            fields: [
+              { id: "f1", label: "Full Name",     type: "text",     required: true  },
+              { id: "f2", label: "Email Address", type: "text",     required: true  },
+              { id: "f3", label: "Message",       type: "textarea", required: false }
+            ],
+            submission_count: 14,
+            share_url: "https://craftyforms.app/f/contact-form",
+            created_at: "2026-04-20T09:12:00Z"
+          }
+        }
+      },
+      patchForm: {
+        method: 'PATCH', path: '/v1/forms/:id', methodClass: 'patch', hasBody: true, hasParam: true,
+        defaultBody: JSON.stringify({ title: "Updated Contact Form", settings: { submitLabel: "Send message" } }, null, 2),
+        mock: {
+          status: 200, ms: 185,
+          body: {
+            id: "form_a3f8", title: "Updated Contact Form", status: "published", slug: "contact-form",
+            fields: [
+              { id: "f1", label: "Full Name",     type: "text",     required: true  },
+              { id: "f2", label: "Email Address", type: "text",     required: true  },
+              { id: "f3", label: "Message",       type: "textarea", required: false }
+            ],
+            submission_count: 14, updated_at: "2026-04-27T10:30:00Z"
+          }
+        }
+      },
+      deleteForm: {
+        method: 'DELETE', path: '/v1/forms/:id', methodClass: 'delete', hasBody: false, hasParam: true,
+        mock: { status: 200, ms: 140, body: { deleted: true, id: "form_a3f8" } }
+      },
+      publish: {
+        method: 'POST', path: '/v1/forms/:id/publish', methodClass: 'post', hasBody: false, hasParam: true,
+        mock: {
+          status: 200, ms: 160,
+          body: { id: "form_a3f8", status: "published", share_url: "https://craftyforms.app/f/contact-form", published_at: "2026-04-27T10:31:00Z" }
+        }
+      },
+      close: {
+        method: 'POST', path: '/v1/forms/:id/close', methodClass: 'post', hasBody: false, hasParam: true,
+        mock: { status: 200, ms: 130, body: { id: "form_a3f8", status: "closed" } }
+      },
+      link: {
+        method: 'GET', path: '/v1/forms/:id/link', methodClass: 'get', hasBody: false, hasParam: true,
+        mock: {
+          status: 200, ms: 110,
+          body: {
+            share_url: "https://craftyforms.app/f/contact-form",
+            embed_snippet: "<iframe src=\"https://craftyforms.app/f/contact-form\" width=\"100%\" height=\"600\" frameborder=\"0\"></iframe>"
+          }
+        }
+      },
       sub: {
-        method: 'GET', path: '/v1/forms/:id/submissions', methodClass: 'get', hasBody: false,
+        method: 'GET', path: '/v1/forms/:id/submissions', methodClass: 'get', hasBody: false, hasParam: true,
         mock: {
           status: 200, ms: 230,
           body: {
@@ -1338,6 +1450,69 @@
             ],
             total: 3
           }
+        }
+      },
+      createSub: {
+        method: 'POST', path: '/v1/forms/:id/submissions', methodClass: 'post', hasBody: true, hasParam: true,
+        defaultBody: JSON.stringify({ data: { "Full Name": "Sam Rivera", "Email": "sam@example.com", "Message": "Looking forward to it!" } }, null, 2),
+        mock: {
+          status: 201, ms: 220,
+          body: {
+            id: "sub_x1y2", form_id: "form_a3f8",
+            data: { "Full Name": "Sam Rivera", "Email": "sam@example.com", "Message": "Looking forward to it!" },
+            submitted_at: "2026-04-27T10:32:00Z"
+          }
+        }
+      },
+      waitSub: {
+        method: 'GET', path: '/v1/forms/:id/submissions/wait', methodClass: 'get', hasBody: false, hasParam: true,
+        mock: {
+          status: 200, ms: 1200,
+          body: {
+            submission: {
+              id: "sub_z9w8", form_id: "form_a3f8",
+              data: { "Full Name": "Jordan Kim", "Email": "jordan@example.com", "Message": "Just submitted!" },
+              submitted_at: "2026-04-27T10:33:00Z"
+            }
+          }
+        }
+      },
+      getSub: {
+        method: 'GET', path: '/v1/submissions/:sid', methodClass: 'get', hasBody: false, hasParam: true, paramType: 'sid',
+        mock: {
+          status: 200, ms: 100,
+          body: {
+            id: "sub_7e2f", form_id: "form_a3f8",
+            data: { "Full Name": "Alex Chen", "Email": "alex@example.com", "Message": "Excited to integrate this." },
+            submitted_at: "2026-04-24T08:15:00Z"
+          }
+        }
+      },
+      account: {
+        method: 'GET', path: '/v1/account', methodClass: 'get', hasBody: false, hasParam: false,
+        mock: {
+          status: 200, ms: 90,
+          body: { id: "usr_abc123", email: "dev@example.com", plan: "pro", api_calls_today: 42, api_calls_limit: 500, storage_gb: 1.2 }
+        }
+      },
+      tokens: {
+        method: 'GET', path: '/v1/account/tokens', methodClass: 'get', hasBody: false, hasParam: false,
+        mock: {
+          status: 200, ms: 110,
+          body: {
+            tokens: [
+              { id: "tok_a1b2", label: "Production key", created_at: "2026-04-15T08:00:00Z", last_used_at: "2026-04-27T09:58:00Z" },
+              { id: "tok_c3d4", label: "Dev key",         created_at: "2026-04-20T12:00:00Z", last_used_at: null }
+            ]
+          }
+        }
+      },
+      createToken: {
+        method: 'POST', path: '/v1/account/tokens', methodClass: 'post', hasBody: true, hasParam: false,
+        defaultBody: JSON.stringify({ label: "My new API key" }, null, 2),
+        mock: {
+          status: 201, ms: 140,
+          body: { id: "tok_e5f6", label: "My new API key", token: "cf_live_7f3a9b2d1e8c4f5a6b7c8d9e0f1a2b3c", created_at: "2026-04-27T10:34:00Z" }
         }
       }
     };
@@ -1461,14 +1636,36 @@
       currentTab = id;
       const tab = TABS[id];
 
-      document.querySelectorAll('.pg-tab').forEach((el, i) => {
-        el.classList.toggle('active', ['create','list','sub'][i] === id);
+      document.querySelectorAll('.pg-tab').forEach(el => {
+        el.classList.toggle('active', el.dataset.tab === id);
       });
 
       const methodEl = document.getElementById('pg-method');
       methodEl.textContent = tab.method;
       methodEl.className   = 'pg-method ' + tab.methodClass;
-      document.getElementById('pg-url').textContent = SERVER + tab.path;
+
+      const paramInput = document.getElementById('pg-param-input');
+      const paramLabel = document.getElementById('pg-param-label');
+      const paramRow   = document.getElementById('pg-param-row');
+      const paramKeyEl = document.getElementById('pg-param-key');
+
+      if (tab.hasParam) {
+        const isSid = tab.paramType === 'sid';
+        paramLabel.textContent   = isSid ? 'SUBMISSION ID' : 'FORM ID';
+        paramKeyEl.textContent   = isSid ? ':sid' : ':id';
+        paramInput.placeholder   = isSid ? 'sub_7e2f' : 'form_a3f8';
+        paramLabel.style.display = '';
+        paramRow.style.display   = '';
+      } else {
+        paramLabel.style.display = 'none';
+        paramRow.style.display   = 'none';
+      }
+
+      const paramVal     = paramInput.value.trim();
+      const resolvedPath = tab.hasParam
+        ? tab.path.replace(':id', paramVal || 'form_a3f8').replace(':sid', paramVal || 'sub_7e2f')
+        : tab.path;
+      document.getElementById('pg-url').textContent = SERVER + resolvedPath;
 
       const bodyLabel = document.getElementById('pg-body-label');
       const bodyEl    = document.getElementById('pg-body');
@@ -1544,12 +1741,17 @@
       } else {
         // Real request to the live server
         try {
+          const paramInput = document.getElementById('pg-param-input');
+          const paramVal   = tab.hasParam ? (paramInput.value.trim() || (tab.paramType === 'sid' ? 'sub_7e2f' : 'form_a3f8')) : '';
+          const livePath   = tab.hasParam
+            ? tab.path.replace(':id', paramVal).replace(':sid', paramVal)
+            : tab.path;
           const opts = {
             method: tab.method,
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + keyVal },
           };
           if (tab.hasBody) opts.body = document.getElementById('pg-body').value;
-          const res     = await fetch(SERVER + tab.path, opts);
+          const res     = await fetch(SERVER + livePath, opts);
           const elapsed = Date.now() - startMs;
           let json;
           try { json = await res.json(); } catch (_) { json = { error: 'Non-JSON response' }; }
@@ -1569,6 +1771,13 @@
     }
 
     pgSwitch('create');
+
+    document.getElementById('pg-param-input').addEventListener('input', function() {
+      const tab = TABS[currentTab];
+      if (!tab || !tab.hasParam) return;
+      const val = this.value.trim() || (tab.paramType === 'sid' ? 'sub_7e2f' : 'form_a3f8');
+      document.getElementById('pg-url').textContent = SERVER + tab.path.replace(':id', val).replace(':sid', val);
+    });
 
     document.getElementById('tier-free').addEventListener('click', function() {
       window.location.href = 'https://crafty-forms.fly.dev';
