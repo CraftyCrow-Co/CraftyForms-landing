@@ -1,0 +1,188 @@
+# CraftyForms
+
+> The headless data capture platform. Capture any kind of data, from anyone, on any screen, in any form.
+
+CraftyForms is two things in one:
+
+**For humans:** A form builder that lets respondents answer in text, voice, photo, or video — whatever makes sense to them. Every response normalizes to the same structured output regardless of input format. Voice notes are transcribed. Photos and videos are parsed. Your data pipeline sees the same schema every time.
+
+**For AI builders:** A headless, MCP-native intake layer for LLM applications. Create forms from a prompt, collect structured human responses, and get them back — in two function calls. The killer primitive is `create_form` → `wait_for_submission`: forms become a structured human-in-the-loop messaging channel.
+
+## Multi-Modal Input
+
+Every question accepts multiple answer formats. The form creator sets which formats are allowed; the respondent picks what works for them.
+
+- **Text** — typed response
+- **Voice** — audio note, auto-transcribed to text + stored as audio asset
+- **Photo** — image capture, returned as a structured asset with signed download URL
+- **Video** — video capture, returned as a structured asset
+
+All input types are normalized to the same `answers` array shape in the submission. Your code handles one data contract regardless of how the human answered.
+
+Text-only forms are free forever. Voice, photo, and video incur storage costs.
+
+## White-Labelling
+
+Full brand control on paid plans: your logo, your colors, your domain. No "powered by CraftyForms" unless you want it.
+
+## Quickstart
+
+Two patterns cover most use cases:
+
+**Short synchronous flow** — ask a human one thing and wait for the answer:
+```ts
+import { CraftyForms } from '@craftyforms/sdk'
+const cf = new CraftyForms({ token: process.env.CF_TOKEN })
+
+const form = await cf.forms.create({
+  prompt: 'Ask for project name, deadline, and preferred contact method',
+  publish: true
+})
+sendToUser(`Please fill this in: ${form.url}`)
+
+const submission = await cf.submissions.waitFor(form.id, { timeoutMs: 300_000 })
+// submission.answers is self-describing — field label, dataType, value inline
+```
+
+**Long-lived channel** — an intake form that runs for months or years:
+```ts
+const form = await cf.forms.create({
+  prompt: 'Customer support intake: name, email, issue category, description',
+  publish: true
+})
+form.onSubmission(async (sub) => {
+  await triageAgent.handle(sub.answers) // pinged on every submission, free at rest
+})
+```
+
+**Zero-code MCP flow** — no SDK at all, agent uses MCP tools directly:
+```
+create_form(prompt: "...") → { id, url }
+subscribe_to_form(form_id: id)
+// every new submission arrives as an in-context notification
+```
+
+## REST API
+
+Base URL: `https://crafty-form-server.fly.dev/v1`
+
+Auth: `Authorization: Bearer cf_live_...` on every request. No sessions, no CSRF.
+
+Key endpoints:
+- `POST /v1/forms` — create a form from a `prompt` string (AI-generated) or a structured `FormDefinition`. Returns `{id, url}`.
+- `POST /v1/forms/{id}/publish` — publish the working copy; respondents see the new version immediately.
+- `GET /v1/forms/{id}/submissions/wait` — long-poll for the next submission. Holds the connection open (up to 60s per call, SDK reconnects transparently). The synchronous "ask one question" primitive.
+- `GET /v1/forms/{id}/submissions` — list historical submissions.
+- `GET /v1/submissions/{sid}` — read one submission. Answers are self-describing: each item carries `field_id`, `label`, `data_type`, and `value`, so the form definition is not needed to interpret the response.
+- `POST /v1/webhooks` — register a URL to receive push events for any form.
+- `GET /v1/account/tokens` — list API tokens for the account.
+
+## MCP Server
+
+Two transports:
+
+**Hosted remote MCP** — add to your agent config:
+```json
+{
+  "mcpServers": {
+    "craftyforms": {
+      "url": "https://crafty-form-server.fly.dev/mcp",
+      "headers": { "Authorization": "Bearer cf_live_..." }
+    }
+  }
+}
+```
+
+**Stdio MCP** — for Claude Desktop and local loops:
+```
+npx @craftyforms/mcp --token=cf_live_...
+```
+
+MCP tools: `create_form`, `get_form`, `update_form`, `publish_form`, `close_form`, `delete_form`, `list_forms`, `subscribe_to_form`, `unsubscribe_from_form`, `list_subscriptions`, `wait_for_submission`, `list_submissions`, `get_submission`, `create_submission`, `export_submissions`, `get_usage`.
+
+Every tool output includes `_next` — a list of 2–4 likely next tools with pre-filled argument suggestions.
+
+`subscribe_to_form` is the push primitive for long-lived forms. Call it once; every new submission arrives as an MCP notification. Subscriptions survive client disconnects with a 7-day backlog. No held connection, nothing billed while idle.
+
+`wait_for_submission` is for short interactive flows. Use `subscribe_to_form` for forms that collect responses over days or months.
+
+## SDKs
+
+- TypeScript/JS: `npm install @craftyforms/sdk`
+- Python: `pip install craftyforms`
+
+Both are generated from the OpenAPI spec with a hand-written ergonomic layer. `forms.create({ prompt, publish })` → `submissions.waitFor(formId)` is the end-to-end in two calls.
+
+## Other Features
+
+- **Draft saving** — respondents can save progress and return later. Authenticated users sync to their account; anonymous users save to localStorage.
+- **Works offline** — every answer is saved the moment it's entered and syncs automatically when the connection returns. No lost responses.
+- **Past entries** — optionally show logged-in respondents their own previous submissions. Configurable as the default landing state.
+- **Field prefill** — pre-populate fields from URL params, the logged-in user's profile, another field's answer, or a related record. Useful for agent flows where context is already known.
+- **Edit responses** — allow respondents to edit their own submissions after submit. Issue per-submission shareable edit links (no auth required for holders).
+- **Conditional logic** — show, hide, skip, require, or set values based on what's been answered. Conditions nest arbitrarily with `all`/`any`.
+- **Data validation** — regex, min/max, custom rules, and checks against external data sources run before a submission is accepted.
+- **Bot protection** — hCaptcha and Turnstile integrations available per-form.
+- **Embed anywhere** — standard embed snippet available for any published form.
+- **Sandbox / test mode** — tokens prefixed `cf_test_` operate on a fully isolated data namespace. Safe for evals and dev loops. Test storage capped at 100 MB free per account.
+- **Rate limiting** — per-form per-minute submission rate limits, configurable per form.
+- **Response deduplication** — per-token idempotency keys prevent double-writes from retrying agents.
+- **Export** — CSV, JSON, XLS from the dashboard or `POST /v1/forms/{id}/submissions:export`.
+- **Collaborator access** — share dashboard access to forms within a team (Teams tier).
+- **Templates** — ready-made form templates available in the builder.
+
+## Form Schema
+
+A `FormDefinition` describes what data to collect. Fields carry a `dataType` key (not an enum — the registry is open). Core types: `text`, `number`, `date`, `datetime`, `boolean`, `choice`, `multi_choice`, `scale`, `file`, `group`, `relation`, `computed`. Layout types (`page_break`, `section_header`) produce no data value.
+
+The logic engine (`evaluateLogic`) is a pure function: given a definition and current form data, it returns `{visibleFields, requiredFields, pendingActions}`. Conditions nest arbitrarily with `all`/`any`. Actions: `show`, `hide`, `require`, `unrequire`, `set_value`, `skip_to`, `submit`, `show_message`.
+
+Pass `?explain=true` on any GET to get inline `_description` fields on every property — useful for an LLM reading an unfamiliar resource for the first time.
+
+## Authentication
+
+Token format: `cf_live_...` (production) or `cf_test_...` (test namespace — fully isolated data, safe to use in evals and dev loops).
+
+Scopes: `forms:read`, `forms:write`, `submissions:read`, `submissions:write`, `assets:read`, `assets:write`, `datasources:read`, `datasources:write`, `ai:invoke`, `webhooks:manage`, `account:read`.
+
+Form-scoped tokens constrain a token to a single form. Useful for sharing one form with one agent.
+
+## Billing
+
+Usage-based. Free tier covers most small workloads.
+
+- Text-only submissions: always free.
+- API reads: 10k/month free, then $0.50/1k.
+- API writes: 1k/month free, then $1.00/1k.
+- Storage: 1 GB free.
+- AI actions (form generation, logic suggestions): 20/month free, BYOK → $0.
+- `wait_for_submission` long-poll: 10,000 wait-seconds/month free (~3 hours of total wait time), then $0.0001/wait-second. Subscriptions and webhooks are free.
+
+## Error Shape
+
+Every error response:
+```json
+{
+  "error": {
+    "type": "invalid_request_error",
+    "code": "field_unknown_data_type",
+    "message": "Field 'age' has dataType 'numeric' which is not registered. Did you mean 'number'?",
+    "param": "fields[2].dataType",
+    "doc_url": "https://docs.craftyforms.com/errors/field_unknown_data_type",
+    "request_id": "req_01H..."
+  }
+}
+```
+
+`doc_url` is always present. An LLM that hits an error can fetch the page and self-correct.
+
+## Links
+
+- Docs: https://docs.craftyforms.com
+- API reference: https://docs.craftyforms.com/api
+- MCP setup guide: https://docs.craftyforms.com/mcp
+- TypeScript SDK: https://github.com/craftyforms/sdk-js
+- Python SDK: https://github.com/craftyforms/sdk-python
+- OpenAPI spec: https://crafty-form-server.fly.dev/v1/openapi.json
+- Status: https://status.craftyforms.com
+- Dashboard: https://app.craftyforms.in

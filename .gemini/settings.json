@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "craftyforms": {
+      "url": "https://crafty-form-server.fly.dev/mcp?api_key=cf_live_3f58f2d30dbdd87b74b2e8c82bb560bc123d71f904dc74e7",
+      "type": "http"
+    }
+  }
+}
