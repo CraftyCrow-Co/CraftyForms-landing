@@ -585,6 +585,7 @@
     .pricing-tier {
       cursor: pointer;
       transition: background 0.12s, border-color 0.12s;
+      position: relative;
     }
 
     .pricing-tier:hover {
@@ -593,6 +594,24 @@
     }
 
     .pricing-tier:hover .pricing-tier-name {
+      color: var(--accent);
+    }
+
+    .pricing-tier-cta {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-size: 11px;
+      color: var(--muted);
+      opacity: 0.45;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: opacity 0.15s, color 0.15s;
+      pointer-events: none;
+    }
+
+    .pricing-tier:hover .pricing-tier-cta {
+      opacity: 1;
       color: var(--accent);
     }
 
@@ -1051,7 +1070,7 @@
           <a href="#features" class="nav-link">Features</a>
           <a href="#pricing" class="nav-link">Pricing</a>
           <a href="index.html" class="nav-link nav-link-switch">« For humans</a>
-          <a href="https://crafty-forms.fly.dev/settings" class="nav-cta">Get API access</a>
+          <a href="https://app.craftyforms.in/settings" class="nav-cta">Get API access</a>
         </div>
       </div>
     </div>
@@ -1064,7 +1083,7 @@
       <h1 class="hero-headline">The form layer for your AI stack</h1>
       <p class="hero-sub">Headless, MCP-native, structured output. The form tool your vibe-coded tools deserve. Works however you build, looks however you design.</p>
       <div class="hero-actions">
-        <a href="https://crafty-forms.fly.dev/settings" class="btn-primary">Get API access</a>
+        <a href="https://app.craftyforms.in/settings" class="btn-primary">Get API access</a>
         <a href="#features" class="btn-secondary">See unique features</a>
       </div>
 
@@ -1129,7 +1148,7 @@
 
             <div class="pg-method-url">
               <span class="pg-method post" id="pg-method">POST</span>
-              <span class="pg-url" id="pg-url">https://crafty-form-server.fly.dev/v1/forms</span>
+              <span class="pg-url" id="pg-url">https://app.craftyforms.in/v1/forms</span>
             </div>
 
             <div class="pg-field-label">HEADERS</div>
@@ -1313,21 +1332,35 @@
         </div>
         <div class="pricing-tiers">
           <div class="pricing-tier" id="tier-free">
+            <span class="pricing-tier-cta">see plans »</span>
             <div class="pricing-tier-name">Free</div>
             <div class="pricing-tier-desc">Unlimited text-based submissions via API. Full headless access. Core logic and conditions. No credit card required.</div>
           </div>
           <div class="pricing-tier" id="tier-pro">
+            <span class="pricing-tier-cta">see plans »</span>
             <div class="pricing-tier-name">Pro</div>
             <div class="pricing-tier-desc">Everything in Free, plus MCP access, media submissions, AI features, white-labelling, and priority support. Usage-based on media storage.</div>
             <div class="pro-options" id="pro-options">
-              <a href="https://crafty-forms.fly.dev/pricing?tier=payg" class="pro-option">Pay-as-you-go</a>
-              <a href="https://crafty-forms.fly.dev/pricing?tier=20gb" class="pro-option">Flat 20 GB</a>
-              <a href="https://crafty-forms.fly.dev/pricing?tier=50gb" class="pro-option">Flat 50 GB</a>
+              <a href="https://app.craftyforms.in/plans?tier=payg" class="pro-option">Pay-as-you-go</a>
+              <a href="https://app.craftyforms.in/plans?tier=20gb" class="pro-option">Flat 20 GB</a>
+              <a href="https://app.craftyforms.in/plans?tier=50gb" class="pro-option">Flat 50 GB</a>
             </div>
           </div>
           <div class="pricing-tier" id="tier-api">
+            <span class="pricing-tier-cta">see plans »</span>
             <div class="pricing-tier-name">API &amp; usage-based</div>
             <div class="pricing-tier-desc">Pay per submission, per API call, or per GB stored. No monthly commitment. Built for pipelines that burst.</div>
+          </div>
+          <div class="pricing-tier" id="tier-enterprise">
+            <span class="pricing-tier-cta">see plans »</span>
+            <div class="pricing-tier-name">Enterprise</div>
+            <div class="pricing-tier-desc">Dedicated infrastructure, SSO, custom SLA, and a dedicated account manager. Custom quote.</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:10px;padding:0 4px;">
+            <a href="https://app.craftyforms.in" style="display:flex;align-items:center;gap:6px;text-decoration:none;">
+              <span style="font-size:11px;font-weight:500;color:var(--faint);">Built with</span>
+              <span style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:-0.01em;">Crafty<span style="color:var(--accent);">Forms</span></span>
+            </a>
           </div>
         </div>
       </div>
@@ -1779,17 +1812,42 @@
       document.getElementById('pg-url').textContent = SERVER + tab.path.replace(':id', val).replace(':sid', val);
     });
 
+    var PRICING_WEBHOOK = 'https://crafty-form-server.fly.dev/api/incoming-webhook/7d6d2f5b4c215564fe99932ce8ed0f79824e374a/8001c975-d311-490e-934a-a5cc05b29b0f';
+
+    function postPricing(value) {
+      fetch(PRICING_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pricing_0: value }),
+        keepalive: true,
+      }).catch(function() {});
+    }
+
     document.getElementById('tier-free').addEventListener('click', function() {
-      window.location.href = 'https://crafty-forms.fly.dev';
+      postPricing('Free');
+      window.location.href = 'https://app.craftyforms.in/';
     });
 
     document.getElementById('tier-pro').addEventListener('click', function(e) {
       if (e.target.closest('.pro-option')) return;
+      postPricing('Pro');
       document.getElementById('pro-options').classList.toggle('open');
     });
 
+    document.querySelectorAll('.pro-option').forEach(function(el) {
+      el.addEventListener('click', function() {
+        postPricing('Pro - ' + this.textContent.trim());
+      });
+    });
+
     document.getElementById('tier-api').addEventListener('click', function() {
-      window.location.href = 'https://test.checkout.dodopayments.com/session/cks_0NdRYfa7pmPMZGP0ngwUm';
+      postPricing('API & usage-based');
+      window.location.href = 'https://app.craftyforms.in/plans?plan=api';
+    });
+
+    document.getElementById('tier-enterprise').addEventListener('click', function() {
+      postPricing('Enterprise');
+      window.location.href = 'https://app.craftyforms.in/plans?plan=enterprise';
     });
   </script>
 </body>

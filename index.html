@@ -452,6 +452,34 @@
       padding: 24px 26px;
       border-right: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .cap-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+
+    .cap-title-row .cap-title {
+      margin-bottom: 0;
+    }
+
+    .cap-goto-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      text-decoration: none;
+      color: var(--muted);
+      opacity: 0.5;
+      transition: opacity 0.15s, color 0.15s;
+    }
+
+    .cap-goto-icon:hover {
+      opacity: 1;
+      color: var(--accent);
     }
 
     .cap-item:nth-child(3n) {
@@ -546,6 +574,7 @@
     .pricing-tier {
       cursor: pointer;
       transition: background 0.12s, border-color 0.12s;
+      position: relative;
     }
 
     .pricing-tier:hover {
@@ -554,6 +583,24 @@
     }
 
     .pricing-tier:hover .pricing-tier-name {
+      color: var(--accent);
+    }
+
+    .pricing-tier-cta {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-size: 11px;
+      color: var(--muted);
+      opacity: 0.45;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: opacity 0.15s, color 0.15s;
+      pointer-events: none;
+    }
+
+    .pricing-tier:hover .pricing-tier-cta {
+      opacity: 1;
       color: var(--accent);
     }
 
@@ -778,7 +825,7 @@
 <script>
   (function(){
     var f = document.createElement('iframe');
-    f.src = "https://app.craftyforms.in/shared-form/aeddfac7-9eaa-4d99-8fa2-e148888e178a";
+    f.src = "https://app.craftyforms.in/shared-form/aeddfac7-9eaa-4d99-8fa2-e148888e178aff";
     f.style = "width:100%;height:600px;border:none;border-radius:12px;display:block;";
     f.setAttribute('loading', 'lazy');
     f.setAttribute('allow', 'microphone *; camera *; geolocation *');
@@ -791,11 +838,8 @@
           </div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:0 4px;">
-          <p class="mock-caption" style="margin-top:0;">Responders pick the format. You get the data. Try it — no data leaves your browser.</p>
-          <a href="https://app.craftyforms.in" style="display:flex;align-items:center;gap:6px;text-decoration:none;flex-shrink:0;margin-left:16px;">
-            <span style="font-size:11px;font-weight:500;color:var(--faint);">Built with</span>
-            <span style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:-0.01em;">Crafty<span style="color:var(--accent);">Forms</span></span>
-          </a>
+          <p class="mock-caption" style="margin-top:0;">Responders pick the format. You get the data. Try it — <strong>no data leaves your browser</strong>.</p>
+
         </div>
       </div>
     </div>
@@ -826,20 +870,22 @@
 
         <div class="feature-cell">
           <div class="feature-num">02</div>
-          <div class="feature-title">AI form creation</div>
-          <p class="feature-desc">Describe what you need to collect — in plain language. CraftyForms generates the fields, types, logic, and settings. You refine from there. No starting from a blank canvas.</p>
+          <div class="feature-title">AI native</div>
+          <p class="feature-desc">Describe what you need to collect — in plain language. CraftyForms generates the fields, types, logic, and settings. You refine from there. 
+            You can also use your own AI agent to create, manage or update forms, as needed.</p>
         </div>
 
         <div class="feature-cell">
           <div class="feature-num">03</div>
-          <div class="feature-title">100% white-labelled</div>
-          <p class="feature-desc">Your logo, your colors, your domain. The form looks and feels like it belongs to your product — because it does. No forced branding, no footnotes, no "powered by" unless you want one.</p>
+          <div class="feature-title">Custom answer types</div>
+          <p class="feature-desc">Dropdowns, multiple-choice, rating are not enough? Create your own types of answers easily. 
+          </p>
         </div>
 
         <div class="feature-cell">
           <div class="feature-num">04</div>
           <div class="feature-title">Past entries</div>
-          <p class="feature-desc">Optionally show respondents their own previous submissions. Useful for recurring check-ins and updates.</p>
+          <p class="feature-desc">Optionally show respondents their own previous submissions. Useful for recurring submissions.</p>
         </div>
 
       </div>
@@ -853,28 +899,22 @@
       <div class="cap-grid">
 
         <div class="cap-item">
-          <div class="cap-title">Conditional logic</div>
-          <p class="cap-desc">Show, hide, skip, or require fields based on what's been answered so far. Nested conditions supported.</p>
+          <div class="cap-title-row">
+            <div class="cap-title">Headless forms via API</div>
+            <a href="https://app.craftyforms.in/form-builder" class="cap-goto-icon" target="_blank" rel="noopener noreferrer" title="Open Form Builder">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </a>
+          </div>
+          <p class="cap-desc">Bring your own UI. Use the APIs to drive form logic and submissions while your frontend renders whatever it wants.</p>
         </div>
 
         <div class="cap-item">
-          <div class="cap-title">Draft saving</div>
-          <p class="cap-desc">Respondents can save progress and return later. Authenticated users sync to their account. Anonymous users save to local storage.</p>
-        </div>
-
-        <div class="cap-item">
-          <div class="cap-title">Works offline</div>
-          <p class="cap-desc">Saves every answer the moment it's entered. When the connection comes back, everything syncs automatically. No lost responses.</p>
-        </div>
-
-        <div class="cap-item">
-          <div class="cap-title">Headless mode</div>
-          <p class="cap-desc">Bring your own UI. Use the API to drive form logic and submissions while your frontend renders whatever it wants.</p>
-        </div>
-
-        <div class="cap-item">
-          <div class="cap-title">API &amp; MCP access</div>
-          <p class="cap-desc">Read and write form data programmatically. Build on top of CraftyForms, connect it to anything, or let your AI tools use it directly.</p>
+          <div class="cap-title">Check against Database</div>
+          <p class="cap-desc">Verify with any of your data sources before submissions.</p>
         </div>
 
         <div class="cap-item">
@@ -883,22 +923,37 @@
         </div>
 
         <div class="cap-item">
-          <div class="cap-title">Edit responses</div>
-          <p class="cap-desc">Allow edits to individual responses, or issue shareable edit links. Can be disabled completely.</p>
+          <div class="cap-title">Pipe answers</div>
+          <p class="cap-desc">Use one question's answer in another question, even before submission. </p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Pre-filled links</div>
+          <p class="cap-desc">Get links with pre-loaded answers, so your users have to type less. </p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">MCP access</div>
+          <p class="cap-desc">AI agents can use and understand CraftyForms on their own. </p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Conditional logic</div>
+          <p class="cap-desc">Show, hide, skip, or require fields based on what's been answered so far. Nested conditions supported.</p>
+        </div>
+
+        <div class="cap-item">
+          <div class="cap-title">Works offline</div>
+          <p class="cap-desc">Saves every answer the moment it's entered. When the connection comes back, everything syncs automatically. No lost responses.</p>
         </div>
 
         <div class="cap-item">
           <div class="cap-title">Data validation</div>
-          <p class="cap-desc">Full REGEX support, custom rules, and the ability to check answers against external data sources before submission.</p>
-        </div>
-
-        <div class="cap-item">
-          <div class="cap-title">Custom answer types</div>
-          <p class="cap-desc">Preset types not enough? Define your own and reuse them across all your forms.</p>
+          <p class="cap-desc">Full REGEX support, custom rules, and the ability to check answers against.</p>
         </div>
 
       </div>
-      <p class="cap-footnote">Also includes: Embed anywhere &middot; Field prefill &middot; Import &amp; export &middot; Collaborator access &middot; Ready templates</p>
+      <p class="cap-footnote">Also includes: Embed anywhere &middot; Import &amp; export &middot; Collaborator access &middot; Ready templates &middot; Automatically save drafts &middot; Edit responses &middot; 100% white-labelled</p>
     </div>
   </section>
 
@@ -906,7 +961,7 @@
   <section class="pricing" id="pricing">
     <div class="container">
 
-      <!-- <div class="pricing-inner">
+      <div class="pricing-inner">
         <div>
           <div class="section-label">Pricing</div>
           <div class="pricing-headline">Free for text.<br>Pay for what you actually use.</div>
@@ -914,34 +969,44 @@
         </div>
         <div class="pricing-tiers">
           <div class="pricing-tier" id="tier-free">
+            <span class="pricing-tier-cta">see plans »</span>
             <div class="pricing-tier-name">Free</div>
             <div class="pricing-tier-desc">Unlimited text-based forms and submissions. Standard branding. Core logic and conditions.</div>
           </div>
           <div class="pricing-tier" id="tier-pro">
+            <span class="pricing-tier-cta">see plans »</span>
             <div class="pricing-tier-name">Pro</div>
             <div class="pricing-tier-desc">Everything in Free, plus full white-labelling, media submissions, AI features, and API access. Usage-based pricing on media storage.</div>
             <div class="pro-options" id="pro-options">
-              <a href="https://app.craftyforms.in/plans?tier=payg" class="pro-option">Pay-as-you-go (~$5/mo)</a>
-              <a href="https://app.craftyforms.in/plans?tier=20gb" class="pro-option">Flat 20 GB ($15/mo)</a>
-              <a href="https://app.craftyforms.in/plans?tier=50gb" class="pro-option">Flat 50 GB ($30/mo)</a>
+              <a href="https://app.craftyforms.in/plans?tier=payg" class="pro-option">Pay-as-you-go</a>
+              <a href="https://app.craftyforms.in/plans?tier=20gb" class="pro-option">Flat 20 GB</a>
+              <a href="https://app.craftyforms.in/plans?tier=50gb" class="pro-option">Flat 50 GB</a>
             </div>
           </div>
           <div class="pricing-tier" id="tier-api">
+            <span class="pricing-tier-cta">see plans »</span>
             <div class="pricing-tier-name">API &amp; usage-based</div>
             <div class="pricing-tier-desc">Unlimited API & MCP calls. Pay only for what you use — no monthly commitment, no caps.</div>
           </div>
           <div class="pricing-tier" id="tier-enterprise">
+            <span class="pricing-tier-cta">see plans »</span>
             <div class="pricing-tier-name">Enterprise</div>
             <div class="pricing-tier-desc">Dedicated infrastructure, SSO, custom SLA, and a dedicated account manager. Custom quote.</div>
           </div>
+                    <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:10px;padding:0 4px;">
+            <a href="https://app.craftyforms.in" style="display:flex;align-items:center;gap:6px;text-decoration:none;">
+              <span style="font-size:11px;font-weight:500;color:var(--faint);">Built with</span>
+              <span style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:-0.01em;">Crafty<span style="color:var(--accent);">Forms</span></span>
+            </a>
+          </div>
         </div>
-      </div> -->
+      </div>
 
 
 
 
 
-      <div class="pricing-inner">
+      <!-- <div class="pricing-inner">
         <div>
           <div class="section-label">Pricing</div>
           <div class="pricing-headline">Free for text.<br>Pay for what you actually use.</div>
@@ -965,7 +1030,7 @@
             </a>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 
@@ -985,7 +1050,7 @@
       <div class="footer-inner">
         <span class="footer-copy">&copy; 2026 CraftyForms. All rights reserved.</span>
         <div class="footer-links">
-          <a href="#"><strong>Docs</strong></a>
+          <a href="docs.html"><strong>Docs</strong></a>
           <a href="privacy.html">Privacy</a>
           <a href="terms.html">Terms</a>
         </div>
@@ -994,20 +1059,41 @@
   </footer>
 
   <script>
+    var PRICING_WEBHOOK = 'https://crafty-form-server.fly.dev/api/incoming-webhook/7d6d2f5b4c215564fe99932ce8ed0f79824e374a/8001c975-d311-490e-934a-a5cc05b29b0f';
+
+    function postPricing(value) {
+      fetch(PRICING_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pricing_0: value }),
+        keepalive: true,
+      }).catch(function() {});
+    }
+
     document.getElementById('tier-free').addEventListener('click', function() {
+      postPricing('Free');
       window.location.href = 'https://app.craftyforms.in/';
     });
 
     document.getElementById('tier-pro').addEventListener('click', function(e) {
       if (e.target.closest('.pro-option')) return;
+      postPricing('Pro');
       document.getElementById('pro-options').classList.toggle('open');
     });
 
+    document.querySelectorAll('.pro-option').forEach(function(el) {
+      el.addEventListener('click', function() {
+        postPricing('Pro - ' + this.textContent.trim());
+      });
+    });
+
     document.getElementById('tier-api').addEventListener('click', function() {
+      postPricing('API & usage-based');
       window.location.href = 'https://app.craftyforms.in/plans?plan=api';
     });
 
     document.getElementById('tier-enterprise').addEventListener('click', function() {
+      postPricing('Enterprise');
       window.location.href = 'https://app.craftyforms.in/plans?plan=enterprise';
     });
   </script>
