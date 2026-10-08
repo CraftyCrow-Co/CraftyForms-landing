@@ -1,0 +1,6 @@
+# GitHub Pages settings. Without this file, pages GitHub builds from markdown
+# used the repo name ("CraftyForms-landing") as the site title and the GitHub
+# repo summary as the description. The .html pages are served exactly as
+# written; nothing here changes them.
+title: CraftyForms
+description: Forms built for how people actually answer. Text, voice, photo or video, returned as structured data.

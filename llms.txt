@@ -147,16 +147,18 @@ Scopes: `forms:read`, `forms:write`, `submissions:read`, `submissions:write`, `a
 
 Form-scoped tokens constrain a token to a single form. Useful for sharing one form with one agent.
 
-## Billing
+## Pricing
 
-Usage-based. Free tier covers most small workloads.
+Full details and checkout: https://app.craftyforms.in/plans
 
-- Text-only submissions: always free.
-- API reads: 10k/month free, then $0.50/1k.
-- API writes: 1k/month free, then $1.00/1k.
-- Storage: 1 GB free.
-- AI actions (form generation, logic suggestions): 20/month free, BYOK → $0.
-- `wait_for_submission` long-poll: 10,000 wait-seconds/month free (~3 hours of total wait time), then $0.0001/wait-second. Subscriptions and webhooks are free.
+- **Free** — ₹0 / $0, forever. Unlimited forms, fields and submissions. 10 known respondents a month, 20 AI responses a month, 1 GB media storage, 1 author. Shows "Powered by CraftyForms" (remove it for ₹499 / $5 a month).
+- **Pro** — ₹1,999 / $25 a month. 100 known respondents a month, 300 AI responses a month, 20 GB media storage. No CraftyForms branding; custom logo and brand colour.
+- **Business** — ₹4,999 / $59 a month. 1,000 known respondents a month, 1,500 AI responses a month, 100 GB media storage, 3 authors, priority support.
+- **Enterprise** — custom quote. Dedicated infrastructure, custom data retention, volume discounts, a dedicated account manager.
+
+The REST API and MCP server need Pro or higher. Every account can try Pro free for 14 days, no credit card needed.
+
+Paying yearly costs 10 months instead of 12. Bring your own AI key on any plan, including Free, for AI with no quota.
 
 ## Error Shape
 
@@ -178,11 +180,9 @@ Every error response:
 
 ## Links
 
-- Docs: https://docs.craftyforms.com
-- API reference: https://docs.craftyforms.com/api
-- MCP setup guide: https://docs.craftyforms.com/mcp
-- TypeScript SDK: https://github.com/craftyforms/sdk-js
-- Python SDK: https://github.com/craftyforms/sdk-python
-- OpenAPI spec: https://crafty-form-server.fly.dev/v1/openapi.json
-- Status: https://status.craftyforms.com
+- Developer page: https://craftyforms.in/api.html
+- Pricing: https://app.craftyforms.in/plans
+- Sign up: https://app.craftyforms.in/?signup=1
+- API keys: https://app.craftyforms.in/settings
+- OpenAPI spec (send your API key): https://crafty-form-server.fly.dev/v1/openapi.json
 - Dashboard: https://app.craftyforms.in

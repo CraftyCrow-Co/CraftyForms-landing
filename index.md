@@ -3,7 +3,7 @@
 > Forms built for how people actually answer.
 > Text, voice, a photo, a video. Your respondents answer however makes sense to them. You get structured data, your brand, your pipeline.
 
-[Request early access](#) · [See how it works](#features)
+[Get started free](https://app.craftyforms.in/?signup=1) · [See how it works](#features)
 
 ---
 
@@ -49,17 +49,20 @@ Also includes: Embed anywhere · Field prefill · Import & export · Collaborato
 
 Text-based submissions are free, forever. Voice, photo, and video responses use storage — you pay for that at cost, nothing more. Advanced features unlock on paid plans.
 
-| Plan | What's included |
-|---|---|
-| **Free** | Unlimited text-based forms and submissions. Standard branding. Core logic and conditions. |
-| **Pro** | Everything in Free, plus full white-labelling, media submissions, AI features, and API access. Usage-based pricing on media storage. |
-| **API & usage-based** | Pay per submission, per API call, or per GB stored. No monthly commitment. Good for bursts. |
+| Plan | Price | What's included |
+|---|---|---|
+| **Free** | ₹0, free forever | Unlimited text-based forms and submissions. Standard branding. Core logic and conditions. |
+| **Pro** | From ₹1,999 / $25 a month | Everything in Free, plus full white-labelling, media submissions, AI features, and API access. Usage-based pricing on media storage. |
+| **API & usage-based** | Pay as you go | Pay per submission, per API call, or per GB stored. No monthly commitment. Good for bursts. |
+| **Enterprise** | Custom quote | Dedicated infrastructure, SSO, custom SLA, and a dedicated account manager. |
+
+Full plan details: [app.craftyforms.in/plans](https://app.craftyforms.in/plans)
 
 ---
 
-## Get early access
+## Get started
 
-We're rolling out early access in batches. [Request early access](#) and we'll be in touch.
+Sign up free, no credit card needed. [Create your account](https://app.craftyforms.in/?signup=1).
 
 ---
 
