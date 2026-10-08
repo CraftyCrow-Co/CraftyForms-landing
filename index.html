@@ -565,6 +565,13 @@
       margin-bottom: 4px;
     }
 
+    .pricing-tier-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
     .pricing-tier-desc {
       font-size: 13px;
       color: var(--muted);
@@ -604,41 +611,6 @@
       color: var(--accent);
     }
 
-
-    .pro-options {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      margin-top: 0;
-      transition: max-height 0.3s ease, opacity 0.25s ease, margin-top 0.25s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .pro-options.open {
-      max-height: 200px;
-      opacity: 1;
-      margin-top: 14px;
-    }
-
-    .pro-option {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--accent);
-      background: var(--bg-white);
-      border: 1px solid #E8B8A8;
-      border-radius: 6px;
-      padding: 10px 14px;
-      text-decoration: none;
-      transition: background 0.12s, border-color 0.12s;
-    }
-
-    .pro-option:hover {
-      background: var(--accent-bg);
-      border-color: var(--accent);
-    }
 
     #tier-pro {
       border-color: var(--accent);
@@ -828,7 +800,7 @@
       <h1 class="hero-headline">Forms built for how people actually answer</h1>
       <p class="hero-sub">Text, voice, a photo, a video. Your respondents answer however it makes sense to them. You get structured data, your brand, your pipeline.</p>
       <div class="hero-actions">
-        <a href="https://app.craftyforms.in/" class="btn-primary">Get Started</a>
+        <a href="https://app.craftyforms.in/?signup=1" class="btn-primary">Get Started</a>
         <a href="#features" class="btn-secondary">See unique features</a>
       </div>
 
@@ -988,19 +960,16 @@
         </div>
         <div class="pricing-tiers">
           <div class="pricing-tier" id="tier-free">
-            <span class="pricing-tier-cta">see plans »</span>
+            <span class="pricing-tier-cta">Start free »</span>
             <div class="pricing-tier-name">Free</div>
+            <div class="pricing-tier-price">₹0 &middot; free forever</div>
             <div class="pricing-tier-desc">Unlimited text-based forms and submissions. Standard branding. Core logic and conditions.</div>
           </div>
           <div class="pricing-tier" id="tier-pro">
             <span class="pricing-tier-cta">see plans »</span>
             <div class="pricing-tier-name">Pro</div>
+            <div class="pricing-tier-price">From ₹1,999 / $25 a month</div>
             <div class="pricing-tier-desc">Everything in Free, plus full white-labelling, media submissions, AI features, and API access. Usage-based pricing on media storage.</div>
-            <div class="pro-options" id="pro-options">
-              <a href="https://app.craftyforms.in/plans?tier=payg" class="pro-option">Pay-as-you-go</a>
-              <a href="https://app.craftyforms.in/plans?tier=20gb" class="pro-option">Flat 20 GB</a>
-              <a href="https://app.craftyforms.in/plans?tier=50gb" class="pro-option">Flat 50 GB</a>
-            </div>
           </div>
           <div class="pricing-tier" id="tier-api">
             <span class="pricing-tier-cta">see plans »</span>
@@ -1059,7 +1028,7 @@
       <div class="final-headline">The last form tool<br>you'll need.</div>
       <!-- <p class="final-sub">We're rolling out early access in batches. Leave your email and we'll be in touch.</p> -->
       <!-- Replace href with your CraftyForms waitlist form URL -->
-      <a href="https://app.craftyforms.in/" class="btn-primary">Get Started</a>
+      <a href="https://app.craftyforms.in/?signup=1" class="btn-primary">Get Started</a>
     </div>
   </section>
 
@@ -1091,24 +1060,18 @@
 
     document.getElementById('tier-free').addEventListener('click', function() {
       postPricing('Free');
-      window.location.href = 'https://app.craftyforms.in/';
+      window.location.href = 'https://app.craftyforms.in/?signup=1';
     });
 
-    document.getElementById('tier-pro').addEventListener('click', function(e) {
-      if (e.target.closest('.pro-option')) return;
+    // Pro is one plan (monthly or yearly, chosen on /plans) — no sub-options.
+    document.getElementById('tier-pro').addEventListener('click', function() {
       postPricing('Pro');
-      document.getElementById('pro-options').classList.toggle('open');
-    });
-
-    document.querySelectorAll('.pro-option').forEach(function(el) {
-      el.addEventListener('click', function() {
-        postPricing('Pro - ' + this.textContent.trim());
-      });
+      window.location.href = 'https://app.craftyforms.in/plans?plan=pro';
     });
 
     document.getElementById('tier-api').addEventListener('click', function() {
       postPricing('API & usage-based');
-      window.location.href = 'https://app.craftyforms.in/plans?plan=api';
+      window.location.href = 'https://app.craftyforms.in/plans?plan=pro';
     });
 
     document.getElementById('tier-enterprise').addEventListener('click', function() {

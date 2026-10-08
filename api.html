@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CraftyForms Docs</title>
-  <meta name="description" content="CraftyForms captures text, voice, photos, and video. Build forms that let people answer however makes sense to them.">
+  <title>CraftyForms for developers — the form layer for your AI stack</title>
+  <meta name="description" content="Headless, MCP-native forms with structured output. Create forms from a prompt, collect text, voice, photo and video answers, and get them back in one schema. Free to start; Pro from ₹1,999 / $25 a month.">
+  <link rel="canonical" href="https://craftyforms.in/api.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -576,6 +577,13 @@
       margin-bottom: 4px;
     }
 
+    .pricing-tier-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
     .pricing-tier-desc {
       font-size: 13px;
       color: var(--muted);
@@ -613,41 +621,6 @@
     .pricing-tier:hover .pricing-tier-cta {
       opacity: 1;
       color: var(--accent);
-    }
-
-    .pro-options {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      margin-top: 0;
-      transition: max-height 0.3s ease, opacity 0.25s ease, margin-top 0.25s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .pro-options.open {
-      max-height: 200px;
-      opacity: 1;
-      margin-top: 14px;
-    }
-
-    .pro-option {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--accent);
-      background: var(--bg-white);
-      border: 1px solid #E8B8A8;
-      border-radius: 6px;
-      padding: 10px 14px;
-      text-decoration: none;
-      transition: background 0.12s, border-color 0.12s;
-    }
-
-    .pro-option:hover {
-      background: var(--accent-bg);
-      border-color: var(--accent);
     }
 
     #tier-pro {
@@ -816,6 +789,17 @@
       color: #989898;
       word-break: break-all;
     }
+
+    /* What the selected endpoint does — from the server's own API list when it
+       answers, else the list in the script below. */
+    .pg-summary {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #989898;
+      margin: -8px 0 14px;
+    }
+    .pg-summary:empty { display: none; }
+    .pg-summary strong { color: #C8C7C2; font-weight: 600; }
 
     .pg-field-label {
       font-size: 10px;
@@ -1089,7 +1073,7 @@
           <a href="#features" class="nav-link">Features</a>
           <a href="#pricing" class="nav-link">Pricing</a>
           <a href="index.html" class="nav-link nav-link-switch">« For humans</a>
-          <a href="https://app.craftyforms.in/settings" class="nav-cta">Get API access</a>
+          <a href="https://app.craftyforms.in/?signup=1&amp;from=api&amp;redirect=/settings" class="nav-cta">Get API access</a>
         </div>
       </div>
     </div>
@@ -1102,7 +1086,7 @@
       <h1 class="hero-headline">The form layer for your AI stack</h1>
       <p class="hero-sub">Headless, MCP-native, structured output. The form tool your vibe-coded tools deserve. Works however you build, looks however you design.</p>
       <div class="hero-actions">
-        <a href="https://app.craftyforms.in/settings" class="btn-primary">Get API access</a>
+        <a href="https://app.craftyforms.in/?signup=1&amp;from=api&amp;redirect=/settings" class="btn-primary">Get API access</a>
         <a href="#features" class="btn-secondary">See unique features</a>
       </div>
 
@@ -1141,11 +1125,17 @@
           <button class="pg-tab" data-tab="createSub" onclick="pgSwitch('createSub')">
             <span class="badge badge-post">POST</span>/v1/forms/:id/submissions
           </button>
+          <button class="pg-tab" data-tab="records" onclick="pgSwitch('records')">
+            <span class="badge badge-get">GET</span>/v1/forms/:id/records
+          </button>
           <button class="pg-tab" data-tab="waitSub" onclick="pgSwitch('waitSub')">
             <span class="badge badge-get">GET</span>/v1/forms/:id/submissions/wait
           </button>
           <button class="pg-tab" data-tab="getSub" onclick="pgSwitch('getSub')">
             <span class="badge badge-get">GET</span>/v1/submissions/:sid
+          </button>
+          <button class="pg-tab" data-tab="deleteSub" onclick="pgSwitch('deleteSub')">
+            <span class="badge badge-delete">DELETE</span>/v1/submissions/:sid
           </button>
           <button class="pg-tab" data-tab="account" onclick="pgSwitch('account')">
             <span class="badge badge-get">GET</span>/v1/account
@@ -1169,6 +1159,7 @@
               <span class="pg-method post" id="pg-method">POST</span>
               <span class="pg-url" id="pg-url">https://app.craftyforms.in/v1/forms</span>
             </div>
+            <p class="pg-summary" id="pg-summary"></p>
 
             <div class="pg-field-label">HEADERS</div>
             <div class="pg-header-row">
@@ -1231,8 +1222,8 @@
         </div>
 
         <p class="pg-note">
-          Get your key from <a href="https://craftyforms.app/settings" target="_blank">craftyforms.app/settings</a>.
-          No account yet? <a href="#access">Sign up free →</a>
+          Get your key from <a href="https://app.craftyforms.in/settings" target="_blank">app.craftyforms.in/settings</a>.
+          No account yet? <a href="https://app.craftyforms.in/?signup=1&amp;from=api&amp;redirect=/settings">Sign up free →</a>
         </p>
       </div>
       <p class="mock-caption">No API key? Leave it blank — we'll show you a realistic example response.</p>
@@ -1271,7 +1262,7 @@
         <div class="feature-cell">
           <div class="feature-num">03</div>
           <div class="feature-title">Text is 100% free</div>
-          <p class="feature-desc">Every text-based submission is free, forever. No trial limits, no gotchas. Start building real pipelines without touching a credit card. Pay only when you add media.</p>
+          <p class="feature-desc">Every text-based submission is free, forever. No gotchas. Try the API and MCP free for 14 days on Pro — no credit card needed.</p>
         </div>
 
         <div class="feature-cell">
@@ -1347,23 +1338,20 @@
         <div>
           <div class="section-label">Pricing</div>
           <div class="pricing-headline">API-first pricing.<br>No seats. No nonsense.</div>
-          <p class="pricing-sub">Text submissions are free, forever. Media uses storage — you pay for that at cost. Advanced features and MCP access unlock on paid plans.</p>
+          <p class="pricing-sub">Text submissions are free, forever. Media uses storage — you pay for that at cost. API &amp; MCP access and advanced features unlock on Pro — try it free for 14 days.</p>
         </div>
         <div class="pricing-tiers">
           <div class="pricing-tier" id="tier-free">
-            <span class="pricing-tier-cta">see plans »</span>
+            <span class="pricing-tier-cta">Start free »</span>
             <div class="pricing-tier-name">Free</div>
-            <div class="pricing-tier-desc">Unlimited text-based submissions via API. Full headless access. Core logic and conditions. No credit card required.</div>
+            <div class="pricing-tier-price">₹0 &middot; free forever</div>
+            <div class="pricing-tier-desc">Unlimited text-based forms and submissions. Core logic and conditions. No credit card required. API &amp; MCP access is on Pro, and you can try it free for 14 days.</div>
           </div>
           <div class="pricing-tier" id="tier-pro">
             <span class="pricing-tier-cta">see plans »</span>
             <div class="pricing-tier-name">Pro</div>
-            <div class="pricing-tier-desc">Everything in Free, plus MCP access, media submissions, AI features, white-labelling, and priority support. Usage-based on media storage.</div>
-            <div class="pro-options" id="pro-options">
-              <a href="https://app.craftyforms.in/plans?tier=payg" class="pro-option">Pay-as-you-go</a>
-              <a href="https://app.craftyforms.in/plans?tier=20gb" class="pro-option">Flat 20 GB</a>
-              <a href="https://app.craftyforms.in/plans?tier=50gb" class="pro-option">Flat 50 GB</a>
-            </div>
+            <div class="pricing-tier-price">From ₹1,999 / $25 a month</div>
+            <div class="pricing-tier-desc">Everything in Free, plus REST API &amp; MCP access, media submissions, AI features, white-labelling, and priority support. Usage-based on media storage.</div>
           </div>
           <div class="pricing-tier" id="tier-api">
             <span class="pricing-tier-cta">see plans »</span>
@@ -1391,7 +1379,7 @@
     <div class="container">
       <div class="final-headline">The intake layer<br>your stack was missing.</div>
       <p class="final-sub">API access is live. Sign up and start building today.</p>
-      <a href="#" class="btn-primary">Get API access</a>
+      <a href="https://app.craftyforms.in/?signup=1&amp;from=api&amp;redirect=/settings" class="btn-primary">Get API access</a>
     </div>
   </section>
 
@@ -1444,7 +1432,7 @@
               { id: "f3", label: "Message",       type: "textarea", required: false }
             ],
             submission_count: 14,
-            share_url: "https://craftyforms.app/f/contact-form",
+            share_url: "https://app.craftyforms.in/shared-form/form_a3f8",
             created_at: "2026-04-20T09:12:00Z"
           }
         }
@@ -1473,7 +1461,7 @@
         method: 'POST', path: '/v1/forms/:id/publish', methodClass: 'post', hasBody: false, hasParam: true,
         mock: {
           status: 200, ms: 160,
-          body: { id: "form_a3f8", status: "published", share_url: "https://craftyforms.app/f/contact-form", published_at: "2026-04-27T10:31:00Z" }
+          body: { id: "form_a3f8", status: "published", share_url: "https://app.craftyforms.in/shared-form/form_a3f8", published_at: "2026-04-27T10:31:00Z" }
         }
       },
       close: {
@@ -1485,8 +1473,8 @@
         mock: {
           status: 200, ms: 110,
           body: {
-            share_url: "https://craftyforms.app/f/contact-form",
-            embed_snippet: "<iframe src=\"https://craftyforms.app/f/contact-form\" width=\"100%\" height=\"600\" frameborder=\"0\"></iframe>"
+            share_url: "https://app.craftyforms.in/shared-form/form_a3f8",
+            embed_snippet: "<iframe src=\"https://app.craftyforms.in/shared-form/form_a3f8\" width=\"100%\" height=\"600\" frameborder=\"0\"></iframe>"
           }
         }
       },
@@ -1516,6 +1504,19 @@
           }
         }
       },
+      records: {
+        method: 'GET', path: '/v1/forms/:id/records', methodClass: 'get', hasBody: false, hasParam: true,
+        mock: {
+          status: 200, ms: 150,
+          body: {
+            producer_form_id: "form_a3f8", count: 2,
+            records: [
+              { record_id: "rec_51c2", record_key: "PO-1042", status: "open",   summary: { "Supplier": "Acme Steel" }, target: { "Quantity": 500 }, progress: { "Quantity": 320 }, entry_count: 3, scope: null, opened_at: "2026-04-20T09:30:00Z", last_entry_at: "2026-04-26T15:10:00Z" },
+              { record_id: "rec_77d9", record_key: "PO-1043", status: "closed", summary: { "Supplier": "Bolt & Co" },  target: { "Quantity": 120 }, progress: { "Quantity": 120 }, entry_count: 2, scope: null, opened_at: "2026-04-21T10:00:00Z", last_entry_at: "2026-04-24T11:45:00Z" }
+            ]
+          }
+        }
+      },
       waitSub: {
         method: 'GET', path: '/v1/forms/:id/submissions/wait', methodClass: 'get', hasBody: false, hasParam: true,
         mock: {
@@ -1539,6 +1540,10 @@
             submitted_at: "2026-04-24T08:15:00Z"
           }
         }
+      },
+      deleteSub: {
+        method: 'DELETE', path: '/v1/submissions/:sid', methodClass: 'delete', hasBody: false, hasParam: true, paramType: 'sid',
+        mock: { status: 204, ms: 120, body: null }
       },
       account: {
         method: 'GET', path: '/v1/account', methodClass: 'get', hasBody: false, hasParam: false,
@@ -1568,6 +1573,34 @@
         }
       }
     };
+
+    // The tabs, in order. Replaced by the server's own list when it answers
+    // (see "The live list" below).
+    let TAB_ORDER = ['create', 'list', 'getForm', 'patchForm', 'deleteForm', 'publish', 'close', 'link',
+      'sub', 'createSub', 'records', 'waitSub', 'getSub', 'deleteSub', 'account', 'tokens', 'createToken'];
+
+    // One line on what each does (the server's list brings its own).
+    const SUMMARIES = {
+      create: 'Create a form', list: 'List your forms', getForm: 'Read one form', patchForm: 'Update a form',
+      deleteForm: 'Delete a form', publish: 'Publish a form', close: 'Close a form', link: 'Share link',
+      sub: 'List responses', createSub: 'Submit a response', records: 'List repeat-entry records',
+      waitSub: 'Wait for the next response', getSub: 'Read one response', deleteSub: 'Delete a response',
+      account: 'Your account', tokens: 'List API keys', createToken: 'Create an API key'
+    };
+    Object.keys(SUMMARIES).forEach(function (id) { TABS[id].summary = SUMMARIES[id]; });
+
+    // The path's id, e.g. "id" in /v1/forms/:id or "sid" in /v1/submissions/:sid.
+    function paramName(tab) {
+      return tab.param || (tab.paramType === 'sid' ? 'sid' : 'id');
+    }
+    function paramExample(name) {
+      return name === 'sid' ? 'sub_7e2f' : name === 'id' ? 'form_a3f8' : 'value';
+    }
+    function fillPath(tab, value) {
+      if (!tab.hasParam) return tab.path;
+      const name = paramName(tab);
+      return tab.path.split(':' + name).join(value || paramExample(name));
+    }
 
     // ── Dynamic mock generator for POST /v1/forms ──────────────────────────────
     //
@@ -1661,7 +1694,6 @@
         fields.push({ id: 'f3', label: 'Message',        type: 'textarea', required: false });
       }
 
-      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
       const hash = strHash(promptRaw.toLowerCase());
 
       return {
@@ -1669,7 +1701,7 @@
         title: title,
         status: publish ? 'published' : 'draft',
         fields: fields,
-        share_url: publish ? ('https://craftyforms.app/f/' + slug) : null,
+        share_url: publish ? ('https://app.craftyforms.in/shared-form/form_' + hash) : null,
         submission_count: 0,
         created_at: new Date().toISOString()
       };
@@ -1684,13 +1716,49 @@
 
     let currentTab = 'create';
 
+    // The tab row, drawn from TAB_ORDER (so the live list can redraw it).
+    function renderTabs() {
+      const row = document.querySelector('.pg-tabs');
+      row.innerHTML = '';
+      TAB_ORDER.forEach(function (id) {
+        const tab = TABS[id];
+        const btn = document.createElement('button');
+        btn.className = 'pg-tab';
+        btn.dataset.tab = id;
+        const badge = document.createElement('span');
+        badge.className = 'badge badge-' + tab.methodClass;
+        badge.textContent = tab.method;
+        btn.appendChild(badge);
+        btn.appendChild(document.createTextNode(tab.path));
+        btn.addEventListener('click', function () { pgSwitch(id); });
+        row.appendChild(btn);
+      });
+      markActive();
+    }
+
+    function markActive() {
+      document.querySelectorAll('.pg-tab').forEach(el => {
+        el.classList.toggle('active', el.dataset.tab === currentTab);
+      });
+    }
+
+    function showSummary() {
+      const tab = TABS[currentTab];
+      const el = document.getElementById('pg-summary');
+      el.textContent = '';
+      if (!tab.summary) return;
+      const strong = document.createElement('strong');
+      strong.textContent = tab.summary;
+      el.appendChild(strong);
+      if (tab.description) el.appendChild(document.createTextNode(' — ' + tab.description));
+    }
+
     function pgSwitch(id) {
       currentTab = id;
       const tab = TABS[id];
 
-      document.querySelectorAll('.pg-tab').forEach(el => {
-        el.classList.toggle('active', el.dataset.tab === id);
-      });
+      markActive();
+      showSummary();
 
       const methodEl = document.getElementById('pg-method');
       methodEl.textContent = tab.method;
@@ -1702,10 +1770,10 @@
       const paramKeyEl = document.getElementById('pg-param-key');
 
       if (tab.hasParam) {
-        const isSid = tab.paramType === 'sid';
-        paramLabel.textContent   = isSid ? 'SUBMISSION ID' : 'FORM ID';
-        paramKeyEl.textContent   = isSid ? ':sid' : ':id';
-        paramInput.placeholder   = isSid ? 'sub_7e2f' : 'form_a3f8';
+        const name = paramName(tab);
+        paramLabel.textContent   = name === 'sid' ? 'SUBMISSION ID' : name === 'id' ? 'FORM ID' : name.replace(/_/g, ' ').toUpperCase();
+        paramKeyEl.textContent   = ':' + name;
+        paramInput.placeholder   = paramExample(name);
         paramLabel.style.display = '';
         paramRow.style.display   = '';
       } else {
@@ -1713,11 +1781,7 @@
         paramRow.style.display   = 'none';
       }
 
-      const paramVal     = paramInput.value.trim();
-      const resolvedPath = tab.hasParam
-        ? tab.path.replace(':id', paramVal || 'form_a3f8').replace(':sid', paramVal || 'sub_7e2f')
-        : tab.path;
-      document.getElementById('pg-url').textContent = SERVER + resolvedPath;
+      document.getElementById('pg-url').textContent = SERVER + fillPath(tab, paramInput.value.trim());
 
       const bodyLabel = document.getElementById('pg-body-label');
       const bodyEl    = document.getElementById('pg-body');
@@ -1767,7 +1831,8 @@
 
       if (isMock) document.getElementById('pg-mock-badge').className = 'pg-mock-badge show';
 
-      document.getElementById('pg-pre').innerHTML = syntaxHL(body);
+      // 204 (a delete) has no body.
+      document.getElementById('pg-pre').innerHTML = body === null ? '// No content' : syntaxHL(body);
     }
 
     async function pgSend() {
@@ -1793,11 +1858,7 @@
       } else {
         // Real request to the live server
         try {
-          const paramInput = document.getElementById('pg-param-input');
-          const paramVal   = tab.hasParam ? (paramInput.value.trim() || (tab.paramType === 'sid' ? 'sub_7e2f' : 'form_a3f8')) : '';
-          const livePath   = tab.hasParam
-            ? tab.path.replace(':id', paramVal).replace(':sid', paramVal)
-            : tab.path;
+          const livePath = fillPath(tab, document.getElementById('pg-param-input').value.trim());
           const opts = {
             method: tab.method,
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + keyVal },
@@ -1805,8 +1866,10 @@
           if (tab.hasBody) opts.body = document.getElementById('pg-body').value;
           const res     = await fetch(SERVER + livePath, opts);
           const elapsed = Date.now() - startMs;
-          let json;
-          try { json = await res.json(); } catch (_) { json = { error: 'Non-JSON response' }; }
+          let json = null;
+          if (res.status !== 204) {
+            try { json = await res.json(); } catch (_) { json = { error: 'Non-JSON response' }; }
+          }
           pgShowResponse(res.status, elapsed, json, false);
         } catch (err) {
           const elapsed = Date.now() - startMs;
@@ -1822,14 +1885,98 @@
       label.textContent = 'Send Request →';
     }
 
+    renderTabs();
     pgSwitch('create');
 
     document.getElementById('pg-param-input').addEventListener('input', function() {
       const tab = TABS[currentTab];
       if (!tab || !tab.hasParam) return;
-      const val = this.value.trim() || (tab.paramType === 'sid' ? 'sub_7e2f' : 'form_a3f8');
-      document.getElementById('pg-url').textContent = SERVER + tab.path.replace(':id', val).replace(':sid', val);
+      document.getElementById('pg-url').textContent = SERVER + fillPath(tab, this.value.trim());
     });
+
+    // ── The live list ──────────────────────────────────────────────────────────
+    //
+    // The server publishes its own API list, built from its code (GET
+    // /docs/api.json — public, no key, cached 5 minutes). When it answers, the
+    // tabs come from it: an endpoint added to the server shows up here by itself,
+    // and one removed goes. Endpoints this page already knows keep their
+    // hand-written examples; a new one gets a body template from its documented
+    // fields and an example that says what it returns. When the list can't be
+    // loaded, the tabs above stay exactly as they are.
+
+    const API_LIST_URL = SERVER + '/docs/api.json';
+
+    function bodyTemplate(fields) {
+      const out = {};
+      fields.forEach(function (f) {
+        if (!f || typeof f.name !== 'string') return;
+        const t = String(f.type || '').toLowerCase();
+        out[f.name] = t === 'array' ? [] : t === 'object' ? {} : t === 'boolean' ? false
+          : (t === 'integer' || t === 'number') ? 0 : '';
+      });
+      return out;
+    }
+
+    function tabFromRoute(r, method) {
+      const params = (Array.isArray(r.path_params) ? r.path_params : [])
+        .map(function (p) { return p && typeof p === 'object' ? p.name : p; })
+        .filter(function (p) { return typeof p === 'string' && p; });
+      const fields = Array.isArray(r.body) ? r.body : [];
+      const hasBody = ['POST', 'PATCH', 'PUT'].indexOf(method) >= 0 && fields.length > 0;
+      const status = Number(r.status) || 200;
+      return {
+        method: method, path: r.path, methodClass: method.toLowerCase(),
+        hasBody: hasBody, hasParam: params.length > 0, param: params[0],
+        defaultBody: hasBody ? JSON.stringify(bodyTemplate(fields), null, 2) : '',
+        mock: {
+          status: status, ms: 150,
+          body: status === 204 ? null : {
+            example: 'No example for this endpoint yet. Paste your API key above and press Send for a real response.',
+            returns: typeof r.response === 'string' ? r.response : null
+          }
+        }
+      };
+    }
+
+    function applyLiveList(catalog) {
+      const routes = catalog && catalog.rest && Array.isArray(catalog.rest.routes) ? catalog.rest.routes : null;
+      if (!routes || !routes.length) return;
+      const known = {};
+      Object.keys(TABS).forEach(function (id) { known[TABS[id].method + ' ' + TABS[id].path] = id; });
+      const order = [];
+      routes.forEach(function (r) {
+        if (!r || typeof r.method !== 'string' || typeof r.path !== 'string') return;
+        const method = r.method.toUpperCase();
+        const key = method + ' ' + r.path;
+        let id = known[key];
+        if (!id) {
+          id = 'live:' + key;
+          TABS[id] = tabFromRoute(r, method);
+        }
+        if (order.indexOf(id) >= 0) return;
+        if (typeof r.summary === 'string' && r.summary) TABS[id].summary = r.summary;
+        TABS[id].description = typeof r.description === 'string' ? r.description : '';
+        order.push(id);
+      });
+      if (!order.length) return;
+      TAB_ORDER = order;
+      renderTabs();
+      // Keep what the reader is looking at (and anything they typed) when that
+      // endpoint is still there.
+      if (order.indexOf(currentTab) >= 0) showSummary();
+      else pgSwitch(order[0]);
+      document.querySelector('.playground-wrap').dataset.apiList = 'live';
+    }
+
+    (function loadLiveList() {
+      if (!window.fetch) return;
+      const ctrl = window.AbortController ? new AbortController() : null;
+      const timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 6000);
+      fetch(API_LIST_URL, { signal: ctrl ? ctrl.signal : undefined, headers: { Accept: 'application/json' } })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (catalog) { clearTimeout(timer); applyLiveList(catalog); })
+        .catch(function () { clearTimeout(timer); });
+    })();
 
     var PRICING_WEBHOOK = 'https://crafty-form-server.fly.dev/api/incoming-webhook/7d6d2f5b4c215564fe99932ce8ed0f79824e374a/8001c975-d311-490e-934a-a5cc05b29b0f';
 
@@ -1844,24 +1991,18 @@
 
     document.getElementById('tier-free').addEventListener('click', function() {
       postPricing('Free');
-      window.location.href = 'https://app.craftyforms.in/';
+      window.location.href = 'https://app.craftyforms.in/?signup=1';
     });
 
-    document.getElementById('tier-pro').addEventListener('click', function(e) {
-      if (e.target.closest('.pro-option')) return;
+    // Pro is one plan (monthly or yearly, chosen on /plans) — no sub-options.
+    document.getElementById('tier-pro').addEventListener('click', function() {
       postPricing('Pro');
-      document.getElementById('pro-options').classList.toggle('open');
-    });
-
-    document.querySelectorAll('.pro-option').forEach(function(el) {
-      el.addEventListener('click', function() {
-        postPricing('Pro - ' + this.textContent.trim());
-      });
+      window.location.href = 'https://app.craftyforms.in/plans?plan=pro';
     });
 
     document.getElementById('tier-api').addEventListener('click', function() {
       postPricing('API & usage-based');
-      window.location.href = 'https://app.craftyforms.in/plans?plan=api';
+      window.location.href = 'https://app.craftyforms.in/plans?plan=pro';
     });
 
     document.getElementById('tier-enterprise').addEventListener('click', function() {

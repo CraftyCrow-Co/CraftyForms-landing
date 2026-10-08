@@ -1,0 +1,2 @@
+# Local AI-tool config. It holds API keys; it must never be published.
+.gemini/

@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CraftyForms — Internal Docs</title>
+  <title>CraftyForms Docs — building, sharing and the API</title>
+  <meta name="description" content="How CraftyForms works: building forms, logic, filling and embedding forms, email notifications, webhooks, the REST API and the MCP server.">
+  <link rel="canonical" href="https://craftyforms.in/docs.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -398,6 +400,149 @@
       color: var(--muted);
     }
 
+    /* ── Docs navigation ────────────────────────── */
+    /* Left: the sections. Right: "On this page" for the section being read.
+       The script at the bottom builds both from the page's own headings, so a
+       new section shows up in them by itself. Without the script — or on a
+       phone, where a "Contents" menu is used instead — the page is the single
+       column it always was. */
+    .docs-container {
+      max-width: 1320px;
+    }
+
+    /* Jump links land below the sticky top bar, not under it. */
+    [id] {
+      scroll-margin-top: 76px;
+    }
+
+    .docs-nav,
+    .docs-toc-mobile {
+      display: none;
+    }
+
+    .docs-nav {
+      position: sticky;
+      top: 58px;
+      align-self: start;
+      max-height: calc(100vh - 58px);
+      overflow-y: auto;
+      padding: 40px 0;
+    }
+
+    .docs-nav-title {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin: 0 0 10px 12px;
+    }
+
+    .docs-nav ul,
+    .docs-toc-mobile ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .docs-nav li,
+    .docs-toc-mobile li {
+      margin: 0;
+    }
+
+    .docs-nav a {
+      display: block;
+      padding: 5px 10px;
+      border-left: 2px solid transparent;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    .docs-nav a:hover {
+      color: var(--ink);
+      opacity: 1;
+    }
+
+    .docs-nav a.is-current {
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+
+    .docs-nav-left ul ul {
+      margin: 2px 0 8px 10px;
+    }
+
+    .docs-nav-left ul ul a,
+    .docs-nav-right a {
+      font-weight: 400;
+      font-size: 12.5px;
+      padding: 4px 10px;
+    }
+
+    .docs-nav-right a.is-endpoint {
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 11.5px;
+    }
+
+    .docs-toc-mobile {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-white);
+      margin-bottom: 40px;
+    }
+
+    .docs-toc-mobile summary {
+      cursor: pointer;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .docs-toc-mobile ul {
+      padding: 0 8px 10px;
+    }
+
+    .docs-toc-mobile a {
+      display: block;
+      padding: 7px 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    @media (min-width: 900px) {
+      .docs-layout.has-nav {
+        display: grid;
+        grid-template-columns: 210px minmax(0, 1fr);
+        gap: 48px;
+      }
+      .docs-layout.has-nav .docs-body {
+        max-width: 800px;
+        min-width: 0;
+        margin: 0;
+      }
+      .docs-layout.has-nav .docs-nav-left {
+        display: block;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .docs-layout.has-nav {
+        grid-template-columns: 220px minmax(0, 1fr) 210px;
+      }
+      .docs-layout.has-nav .docs-nav-right {
+        display: block;
+      }
+    }
+
+    @media (max-width: 899px) {
+      .docs-layout.has-nav .docs-toc-mobile {
+        display: block;
+      }
+    }
+
     /* ── Responsive ─────────────────────────────── */
     @media (max-width: 800px) {
       .nav-link {
@@ -455,13 +600,18 @@
 
   <header class="docs-header">
     <div class="container">
-      <h1 class="page-title">Internal Docs</h1>
-      <p class="page-subtitle">Technical reference for the CraftyForms headless data-capture platform.</p>
+      <h1 class="page-title">CraftyForms Docs</h1>
+      <p class="page-subtitle">How to build, share and connect forms — plus the REST API and MCP server.</p>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container docs-container">
+    <div class="docs-layout" id="docs-layout">
+    <div class="docs-nav docs-nav-left" id="docs-nav-left" role="navigation" aria-label="Docs sections"></div>
     <div class="docs-body">
+      <details class="docs-toc-mobile" id="docs-toc-mobile">
+        <summary>Contents</summary>
+      </details>
 
       <section id="overview">
         <h2 class="section-title">Overview</h2>
@@ -469,13 +619,11 @@
           <strong>CraftyForms</strong> is a headless data-capture platform. It lets you build, publish, and collect responses for any kind of form — without coupling the data model to how it looks or behaves on screen.
         </p>
 
-        <h3 class="sub-title">Data Flow</h3>
+        <h3 class="sub-title">How it fits together</h3>
         <ol>
-          <li>Form definitions are stored as JSON in the <code>form_schemas</code> Supabase table.</li>
-          <li>The <strong>Builder</strong> (<code>FormBuilder.js</code>) creates and edits definitions.</li>
-          <li>The <strong>Filler</strong> (<code>SharedForm.js</code>) serves the public URL, collects answers, and stores them in <code>form_data</code>.</li>
-          <li>The <strong>Dashboard</strong> (<code>FormGenerator.js</code>) lists forms, shows analytics, and provides share controls.</li>
-          <li>The <strong>Server</strong> handles email, webhooks, incoming/outgoing data APIs, payments, and the MCP integration.</li>
+          <li>You build a form in the <strong>Builder</strong> — or describe it and let AI, the REST API or an MCP client build it.</li>
+          <li>You publish it. Respondents fill it at its share link, or wherever you embed it.</li>
+          <li>Responses land in your <strong>Dashboard</strong>, and can also go out by email, webhook, Google Sheets or the API.</li>
         </ol>
       </section>
 
@@ -484,21 +632,10 @@
 
         <h3 class="sub-title" id="builder-create-sub">Creating and Editing a Form</h3>
         <p>
-          Navigate to <code>/builder</code>. The page title updates to <em>Builder | CraftyForms.in</em>.
-          If the URL contains <code>?editFormId=&lt;uuid&gt;</code> or the router state carries <code>editFormId</code>,
-          the builder loads that form from Supabase and populates all fields.
+          Start a new form from your dashboard, or open an existing one to edit it.
+          The form's owner and anyone added as an <strong>editor</strong> can edit;
+          <strong>viewers</strong> can look but not change anything.
         </p>
-        <p>
-          Ownership is enforced: if the logged-in user is not the form owner,
-          the builder checks <code>form_collaborators</code> for an <code>editor</code> role.
-          Viewers are redirected to the dashboard.
-        </p>
-
-        <div class="callout">
-          A <strong>New Form</strong> flow triggered with <code>location.state.newForm = true</code> wipes all builder state
-          (including localStorage keys <code>fb_formTitle</code>, <code>fb_formFields</code>, <code>fb_editingFormId</code>)
-          before rendering so stale data never leaks between sessions.
-        </div>
       </section>
 
       <section id="builder-fields">
@@ -519,14 +656,14 @@
               <tr><td><code>dropdown</code></td><td>Dropdown select</td><td>Same option sources as radio</td></tr>
               <tr><td><code>slider</code></td><td>Range slider</td><td>Configurable min / max / step</td></tr>
               <tr><td><code>slider_date</code></td><td>Slider with date range</td><td>Emits three schema keys: <code>sliders</code>, <code>start_date</code>, <code>end_date</code></td></tr>
-              <tr><td><code>file</code></td><td>File upload</td><td>Uploaded on submit to Supabase storage</td></tr>
+              <tr><td><code>file</code></td><td>File upload</td><td>Uploaded when the form is submitted</td></tr>
               <tr><td><code>image</code></td><td>Camera capture or gallery</td><td>Toggle: allow gallery. Stores as storage URL.</td></tr>
               <tr><td><code>video</code></td><td>Video recording</td><td>Records via MediaRecorder API</td></tr>
               <tr><td><code>audio</code></td><td>Audio recording</td><td>Records via MediaRecorder API</td></tr>
               <tr><td><code>array</code></td><td>Repeating group</td><td>Needs at least one sub-field. Add-item label configurable.</td></tr>
               <tr><td><code>select_multiple</code></td><td>Multi-format capture</td><td>Sub-types (text, file, audio, video). anyOne mode: stop collecting once any sub-type is submitted.</td></tr>
               <tr><td><code>option_card</code></td><td>Rich option cards</td><td>Cards have label, description, hyperlink, sub-options, highlight flag.</td></tr>
-              <tr><td><code>relation</code></td><td>Linked data source</td><td>Picks from a registered <code>data_sources</code> row (sourceKey, displayField, valueField)</td></tr>
+              <tr><td><code>relation</code></td><td>Linked data source</td><td>Picks from one of your data sources (which field to show, which to store)</td></tr>
               <tr><td><code>computed</code></td><td>Read-only formula field</td><td>Evaluates <code>formula</code> expression</td></tr>
               <tr><td><code>location</code></td><td>GPS / map pin</td><td>v2 type</td></tr>
               <tr><td><code>signature</code></td><td>Canvas draw</td><td>v2 type — outputs base64 PNG</td></tr>
@@ -534,8 +671,8 @@
               <tr><td><code>duration</code></td><td>HH:MM:SS input</td><td>v2 type — stores total seconds</td></tr>
               <tr><td><code>rating</code></td><td>Star / emoji rating</td><td>v2 type — configurable max stars</td></tr>
               <tr><td><code>payment</code></td><td>Stripe payment field</td><td>v2 type — fixed or dynamic amount</td></tr>
-              <tr><td><em>custom type</em></td><td>User-defined type stored in <code>custom_field_types</code></td><td>Has a base type, optional preset config (options, min/max, placeholder)</td></tr>
-              <tr><td><em>custom widget</em></td><td>Code-based widget stored in <code>custom_widgets</code></td><td>Registers via <code>window.__CraftyWidgetQueue</code> at runtime</td></tr>
+              <tr><td><em>custom type</em></td><td>Your own reusable type</td><td>Has a base type, optional preset config (options, min/max, placeholder)</td></tr>
+              <tr><td><em>custom widget</em></td><td>Your own code-based answer type</td><td>Registers via <code>window.__CraftyWidgetQueue</code> at runtime</td></tr>
             </tbody>
           </table>
         </div>
@@ -545,8 +682,8 @@
         <ul>
           <li><strong>Manual</strong> — comma-separated values entered in the builder. Paste-normalisation strips numbered lists, bullets, and excess whitespace automatically.</li>
           <li><strong>Google Sheet</strong> — a spreadsheet ID + range (e.g. <code>Sheet1!A:A</code>). The filler fetches live values at render time; falls back to Google gviz if the primary server is unreachable.</li>
-          <li><strong>Another form</strong> — picks unique values from a specific field (by property key) from another form's <code>form_data</code> submissions.</li>
-          <li><strong>Data source</strong> — references a registered <code>data_sources</code> row (resolver type: <code>supabase_table</code>, <code>http</code>, or <code>static</code>).</li>
+          <li><strong>Another form</strong> — picks unique values from a specific field in another form's submissions.</li>
+          <li><strong>Data source</strong> — one of your data sources: a database table, an HTTP endpoint, or a fixed list.</li>
         </ul>
 
         <h3 class="sub-title">Field-Level Options</h3>
@@ -597,9 +734,8 @@
       <section id="builder-settings">
         <h3 class="sub-title">Settings (v2)</h3>
         <p>
-          The Settings tab in the builder is organised into accordion sections.
-          All values are persisted to <code>localStorage</code> as the user types
-          and flushed to <code>form_schemas</code> on publish or draft-save.
+          The Settings tab in the builder is organised into sections.
+          Changes are kept as you type and saved to your form when you publish or save a draft.
         </p>
 
         <h3 class="sub-title">Renderer</h3>
@@ -632,25 +768,25 @@
           <li><strong>Show past entries</strong> — filler can see their own previous submissions.</li>
           <li><strong>Allow filler edit</strong> — filler can edit their last submission (via <code>?editId=</code> URL param).</li>
           <li><strong>Show edit link</strong> — display an edit link on the success screen.</li>
-          <li><strong>Allow offline</strong> — enable offline submission queue (IndexedDB / localStorage).</li>
+          <li><strong>Allow offline</strong> — responses given offline are kept on the device and sent when it reconnects.</li>
           <li><strong>Close at</strong> — ISO datetime; the form auto-closes at this time.</li>
           <li><strong>Max submissions</strong> — auto-close after N responses.</li>
-          <li><strong>Is closed</strong> — manual close toggle. Changes propagate immediately to <code>form_schemas</code> and <code>form_versions</code> without requiring a re-publish.</li>
+          <li><strong>Is closed</strong> — manual close toggle. Takes effect immediately, without a re-publish.</li>
           <li><strong>Success message</strong> — shown on the filler's success screen.</li>
           <li><strong>Redirect URL</strong> — redirect the filler here after a successful submit.</li>
         </ul>
 
         <h3 class="sub-title">Webhooks</h3>
         <ul>
-          <li><strong>Outgoing webhook</strong> — on every submit, the filler POSTs to <code>/outgoing-webhook/:formId/:secret</code>. Multiple secrets supported (up to plan limit).</li>
-          <li><strong>Webhook forward URL</strong> — the server re-POSTs the payload to this URL (e.g. n8n, Zapier, Make).</li>
-          <li><strong>Incoming API</strong> — external systems can push data to <code>/api/incoming-webhook/:apiKey/:formId</code>. Multiple per-form API keys supported.</li>
+          <li><strong>Outgoing webhook</strong> — every submission is sent to your webhook. Multiple secrets supported (up to your plan's limit). See <a href="#webhooks">Webhooks</a>.</li>
+          <li><strong>Webhook forward URL</strong> — each submission is also POSTed to this URL (e.g. n8n, Zapier, Make).</li>
+          <li><strong>Incoming API</strong> — external systems can push data into the form. Multiple per-form API keys supported. See <a href="#webhooks">Webhooks</a>.</li>
         </ul>
 
         <h3 class="sub-title">Google Sheets</h3>
         <p>
-          Link a Google Sheet via the builder's Sheet picker. The spreadsheet ID is stored in the <code>form_spreadsheets</code> table.
-          On every submission the server appends a row. The spreadsheet modal accepts a full Google Sheets URL
+          Link a Google Sheet via the builder's Sheet picker.
+          Every submission adds a row to it. The spreadsheet modal accepts a full Google Sheets URL
           or a raw spreadsheet ID (auto-detected).
         </p>
       </section>
@@ -661,30 +797,29 @@
           <li>Builder validates: title required, at least one field required.</li>
           <li>If running in an iframe or popup and user is not logged in, a compact login form appears inline.</li>
           <li>Email/password users must have confirmed their email (<code>email_confirmed_at</code> must be set).</li>
-          <li>Fields are serialised into a JSON-Schema <code>properties</code> map with a stable <code>field_order</code> array. Each key is derived as <code>{label_snake_case}_{index}</code>.</li>
-          <li>The full schema (including <code>v2</code> settings) is upserted into <code>form_schemas</code>. A matching row is upserted into <code>form_versions</code> (with <code>is_live = true</code>).</li>
+          <li>Each field gets a stable key, derived as <code>{label_snake_case}_{index}</code>. These are the keys you see in submissions, exports and the API.</li>
+          <li>The form and its settings are saved, and the new version goes live.</li>
           <li>The publish success screen shows the shareable link. Embedded/popup mode posts a <code>CRAFTY_FORM_PUBLISHED</code> message to the parent window and closes.</li>
         </ol>
 
         <h3 class="sub-title">Auto-save &amp; Undo / Redo</h3>
         <ul>
-          <li><strong>Auto-save</strong> — debounced 1500 ms after any change. Saves to localStorage; shows a status indicator (<em>saving…</em> / <em>saved</em> / <em>error</em>).</li>
-          <li><strong>Draft save</strong> — persists to Supabase without triggering the publish flow. If not logged in, saves locally only.</li>
-          <li><strong>Undo / Redo</strong> — <kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Shift+Z</kbd>. History stack is in-memory (up to 50 steps). Snapshots include <code>fields</code> + <code>rendererKey</code>.</li>
-          <li><strong>Drag to reorder</strong> — drag handle on each field card. Updates the <code>formFields</code> array and adjusts <code>editingFieldIndex</code> accordingly.</li>
+          <li><strong>Auto-save</strong> — 1.5 seconds after any change, saved on this device; shows a status indicator (<em>saving…</em> / <em>saved</em> / <em>error</em>).</li>
+          <li><strong>Draft save</strong> — saves to your account without publishing. If not logged in, saves on this device only.</li>
+          <li><strong>Undo / Redo</strong> — <kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Shift+Z</kbd>, up to 50 steps.</li>
+          <li><strong>Drag to reorder</strong> — drag handle on each field card.</li>
         </ul>
 
         <h3 class="sub-title">Version History</h3>
         <p>
-          Clicking the History button in the builder fetches <code>activity_logs</code> for the current form,
-          ordered by <code>created_at</code> descending. Any entry with an attached schema snapshot can be restored
-          back into the builder (no automatic re-publish).
+          The History button in the builder lists past saves of the form, newest first.
+          Any saved version can be restored back into the builder (it is not re-published automatically).
         </p>
 
         <h3 class="sub-title">Collaborators</h3>
         <p>
           Form owners can add collaborators (by email) with roles <strong>editor</strong> or <strong>viewer</strong>
-          via the Collaborators modal in the builder. Stored in the <code>form_collaborators</code> table.
+          via the Collaborators modal in the builder.
           Editors can open the builder; viewers have read-only access.
         </p>
       </section>
@@ -702,11 +837,11 @@
 
         <h3 class="sub-title">Custom Types &amp; Custom Widgets</h3>
         <p>
-          <strong>Custom field types</strong> are stored per-user in <code>custom_field_types</code> (type_key, label, icon, base_type, default_config).
+          <strong>Custom field types</strong> are saved to your account (key, label, icon, base type, default settings).
           They wrap a base type with preset configuration (options, min/max, placeholder).
         </p>
         <p>
-          <strong>Custom widgets</strong> are stored in <code>custom_widgets</code> (widget_key, label, icon, code).
+          <strong>Custom widgets</strong> are saved to your account (key, label, icon, code).
           The code block must push a component onto <code>window.__CraftyWidgetQueue</code>.
           If the code is a plain function without the queue push, the builder auto-wraps it.
           Widget key is auto-derived from the function name (CamelCase → snake_case) or from the label.
@@ -714,15 +849,15 @@
       </section>
 
       <section id="filler-url">
-        <h2 class="section-title">Form Filler (SharedForm)</h2>
+        <h2 class="section-title">Filling a Form</h2>
 
         <h3 class="sub-title">Public URL</h3>
         <p>
-          Forms are served at <code>/shared-form/:id</code>.
-          The ID suffix <code>ff</code> (e.g. <code>/shared-form/{uuid}ff</code>) is a <em>filler-mode flag</em> — the two trailing characters are stripped before use and the view is forced to filler mode (hides the data-explorer tab).
+          Forms are served at <code>https://app.craftyforms.in/shared-form/{form-id}</code>.
+          Share links end in <code>ff</code> (<code>/shared-form/{form-id}ff</code>), which opens the form in fill mode for respondents.
         </p>
         <p>
-          On load the component resolves the <em>effective schema</em>: it first checks <code>form_versions</code> for a live version (<code>is_live = true</code>); if absent it falls back to the raw <code>form_schemas</code> row. The page title is updated to the form title.
+          Respondents always see the latest published version, and the browser tab shows the form's title.
         </p>
 
         <h3 class="sub-title">URL Prefill</h3>
@@ -775,11 +910,11 @@
         <ol>
           <li>Client-side validation of required fields (including logic-engine-determined required set).</li>
           <li>CAPTCHA token obtained (if configured).</li>
-          <li>File / image / audio / video fields uploaded to Supabase Storage; URLs stored in <code>formData</code>.</li>
+          <li>File / image / audio / video answers uploaded; the submission stores links to them.</li>
           <li>Payment field processed via Stripe (if present) — submission proceeds only on payment success.</li>
-          <li>Submission inserted into <code>form_data</code> (primary) and optionally into <code>form_submissions</code> (Step App cross-link).</li>
-          <li>Outgoing webhook fired to <code>/outgoing-webhook/:formId/:secret</code>.</li>
-          <li>Email notification sent via <code>POST /send-email</code>.</li>
+          <li>Submission saved.</li>
+          <li>Outgoing webhook fired (if enabled).</li>
+          <li>Email notifications sent (if enabled).</li>
           <li>Google Sheets row appended (if spreadsheet linked).</li>
           <li>Success screen shown or redirect executed.</li>
         </ol>
@@ -798,32 +933,26 @@
           and retried when connectivity is restored.
         </p>
         <p>
-          <strong>Draft saving</strong> — authenticated users: draft is stored as a <code>form_data</code> row with
-          <code>status = 'draft'</code> and restored on next visit.
-          Unauthenticated users: draft is saved to <code>localStorage</code> keyed by form ID.
+          <strong>Draft saving</strong> — logged-in respondents: the draft is saved to their account and restored on their next visit.
+          Anonymous respondents: the draft is saved in their browser.
         </p>
       </section>
 
       <section id="dashboard-list">
-        <h2 class="section-title">Dashboard (FormGenerator)</h2>
+        <h2 class="section-title">Dashboard</h2>
 
         <h3 class="sub-title">Forms List</h3>
         <p>
-          The dashboard fetches forms from <code>form_schemas</code> paginated 10 per page
-          (<code>PAGE_SIZE = 10</code>), ordered newest first.
-          Infinite scroll via a "Load more" trigger appends the next page.
+          The dashboard lists your forms newest first, 10 at a time; "Load more" shows the next 10.
         </p>
         <p>
-          A <strong>search bar</strong> runs a Supabase <code>ilike</code> query on <code>schema-&gt;&gt;title</code>.
-          Search is debounced and replaces the paginated list with filtered results.
+          A <strong>search bar</strong> filters forms by title as you type.
         </p>
         <p>
-          A <strong>Shared filter</strong> toggle switches the list to show forms from <code>form_collaborators</code>
-          where the current user has been added as a collaborator.
+          A <strong>Shared filter</strong> shows forms other people have added you to as a collaborator.
         </p>
         <p>
-          Forms pending soft-deletion (30-second undo toast) are tracked in <code>UndoContext.pendingFormIds</code>
-          and hidden from the list until confirmed or cancelled.
+          Deleting a form gives you 30 seconds to undo before it is removed.
         </p>
       </section>
 
@@ -840,7 +969,7 @@
             <strong>Embed tab</strong> — generates an iframe or JS snippet. Customisable width (default <code>100%</code>) and height (default <code>600px</code>). See <a href="#embed">Embed section</a> for details.
           </li>
           <li>
-            <strong>Collaborators tab</strong> — add / change role / remove collaborators. Stored in <code>form_collaborators</code>. Roles: <code>editor</code>, <code>viewer</code>.
+            <strong>Collaborators tab</strong> — add / change role / remove collaborators. Roles: <code>editor</code>, <code>viewer</code>.
           </li>
         </ul>
       </section>
@@ -848,16 +977,15 @@
       <section id="dashboard-analytics">
         <h3 class="sub-title">Analytics Summary</h3>
         <p>
-          For each loaded form, the dashboard fetches aggregate analytics:
+          Each form in the dashboard shows:
         </p>
         <ul>
-          <li><strong>Total responses</strong> — count of rows in <code>form_data</code> for this form ID.</li>
-          <li><strong>Today's responses</strong> — count with <code>created_at &gt;= today</code>.</li>
-          <li><strong>Starts</strong> — count of rows in an activity-log or session table where the form was opened.</li>
+          <li><strong>Total responses</strong> — all submissions to the form.</li>
+          <li><strong>Today's responses</strong> — submissions received today.</li>
+          <li><strong>Starts</strong> — how many times the form was opened.</li>
         </ul>
         <p>
-          A summary banner above the list shows totals across <em>all</em> forms (not just the loaded page),
-          computed separately with a single aggregation query.
+          A summary banner above the list shows totals across <em>all</em> your forms.
         </p>
       </section>
 
@@ -867,7 +995,7 @@
         <h3 class="sub-title">iframe Snippet</h3>
         <pre><code><span class="tok-kw">&lt;iframe</span>
   <span class="tok-var">id</span>=<span class="tok-str">"crafty-form-{form-id}"</span>
-  <span class="tok-var">src</span>=<span class="tok-str">"https://craftyforms.in/shared-form/{form-id}"</span>
+  <span class="tok-var">src</span>=<span class="tok-str">"https://app.craftyforms.in/shared-form/{form-id}"</span>
   <span class="tok-var">width</span>=<span class="tok-str">"100%"</span>
   <span class="tok-var">height</span>=<span class="tok-str">"600"</span>
   <span class="tok-var">frameborder</span>=<span class="tok-str">"0"</span>
@@ -890,7 +1018,7 @@
 <span class="tok-kw">&lt;script&gt;</span>
   (<span class="tok-kw">function</span>(){
     <span class="tok-kw">var</span> f = document.createElement(<span class="tok-str">'iframe'</span>);
-    f.src = <span class="tok-str">"https://craftyforms.in/shared-form/{form-id}"</span>;
+    f.src = <span class="tok-str">"https://app.craftyforms.in/shared-form/{form-id}"</span>;
     f.style = <span class="tok-str">"width:100%;height:600px;border:none;border-radius:12px;display:block;"</span>;
     f.setAttribute(<span class="tok-str">'loading'</span>, <span class="tok-str">'lazy'</span>);
     f.setAttribute(<span class="tok-str">'allow'</span>, <span class="tok-str">'microphone *; camera *; geolocation *'</span>);
@@ -918,24 +1046,18 @@
       <section id="notifications">
         <h2 class="section-title">Email Notifications</h2>
 
-        <p>
-          Email is delivered via <strong>SendPulse</strong> SMTP API (transactional).
-          Required env vars on the server: <code>SENDPULSE_CLIENT_ID</code>, <code>SENDPULSE_CLIENT_SECRET</code>,
-          <code>SENDPULSE_SENDER_EMAIL</code>, <code>SENDPULSE_SENDER_NAME</code>.
-        </p>
-
         <h3 class="sub-title">Owner Notification</h3>
         <p>
           Triggered on every successful submission when <code>v2.notifications.notifyOwner = true</code>.
         </p>
         <ul>
-          <li>Recipient: <code>v2.notifications.ownerEmail</code> (or <code>notifyOwnerEmail</code>) → fallback to <code>NOTIFY_OWNER_EMAIL</code> env var.</li>
+          <li>Recipient: <code>v2.notifications.ownerEmail</code> (or <code>notifyOwnerEmail</code>).</li>
           <li>Subject: <em>New response: {form title}</em></li>
           <li>Body: a custom message (if set) + an HTML table of submitted field/answer pairs.</li>
         </ul>
         <div class="callout">
-          If <strong>notifyOwner</strong> is true but no email address is configured anywhere, the server logs a warning and sends nothing.
-          Add an email in form Settings &rarr; Notifications, or set the <code>NOTIFY_OWNER_EMAIL</code> env var as a fallback.
+          If <strong>notifyOwner</strong> is on but no email address is set, nothing is sent.
+          Add an email in form Settings &rarr; Notifications.
         </div>
 
         <h3 class="sub-title">Respondent Confirmation</h3>
@@ -954,23 +1076,17 @@
           owner and respondent emails. The message is rendered in a highlighted callout block in the HTML email.
           Newlines in the message are converted to <code>&lt;br&gt;</code> tags.
         </p>
-
-        <h3 class="sub-title">Welcome Email</h3>
-        <p>
-          <code>POST /send-welcome-email</code> with <code>{ email }</code> sends a branded onboarding email to new sign-ups.
-          Called automatically after a user's first authentication.
-        </p>
       </section>
 
       <section id="api-rest">
         <h2 class="section-title">REST API</h2>
 
         <p>
-          All routes require a <strong>Pro or API plan</strong> and a Bearer token:
+          All routes need the <strong>Pro plan or higher</strong> (try it free for 14 days, no credit card) and a Bearer token:
         </p>
         <pre><code><span class="tok-kw">Authorization:</span> <span class="tok-str">Bearer cf_live_&lt;your-token&gt;</span></code></pre>
 
-        <p>Token format: <code>cf_live_</code> prefix + 48 hex chars. Obtain or regenerate tokens via the dashboard settings or the token management endpoints below.</p>
+        <p>Token format: <code>cf_live_</code> prefix + 48 hex chars. Get or regenerate your key at <a href="https://app.craftyforms.in/settings">app.craftyforms.in/settings</a>, or with the token endpoints below.</p>
 
         <hr />
 
@@ -991,8 +1107,8 @@
               <table>
                 <thead><tr><th>Body field</th><th>Type</th><th>Description</th></tr></thead>
                 <tbody>
-                  <tr><td><code>prompt</code></td><td>string</td><td>Plain-text description — schema is auto-generated via <code>parsePromptToSchema</code></td></tr>
-                  <tr><td><code>fields</code></td><td>array</td><td>Array of field objects — converted to FormBuilder properties format</td></tr>
+                  <tr><td><code>prompt</code></td><td>string</td><td>Plain-text description — the form is generated from it</td></tr>
+                  <tr><td><code>fields</code></td><td>array</td><td>Array of field objects</td></tr>
                   <tr><td><code>definition</code></td><td>object</td><td>Pre-built <code>FormDefinition</code> JSON</td></tr>
                   <tr><td><code>settings</code></td><td>object</td><td>Merged into <code>v2</code> settings</td></tr>
                   <tr><td><code>language</code></td><td>string</td><td>BCP 47 language code</td></tr>
@@ -1073,7 +1189,7 @@
 
         <div class="endpoint">
           <div class="endpoint-header"><span class="method delete">DELETE</span><span class="endpoint-path">/v1/submissions/:sid</span></div>
-          <div class="endpoint-body"><p>Soft-delete a submission (sets <code>_deleted: true</code> in <code>form_data</code>). Returns <code>204</code>.</p></div>
+          <div class="endpoint-body"><p>Soft-delete a submission. Returns <code>204</code>.</p></div>
         </div>
 
         <div class="endpoint">
@@ -1095,158 +1211,40 @@
         </div>
       </section>
 
-      <section id="api-server">
-        <h2 class="section-title">Server Endpoints (server.js)</h2>
+      <section id="webhooks">
+        <h2 class="section-title">Webhooks</h2>
+        <p>Webhooks and the incoming API need the Pro plan or higher. Turn them on per form in the builder's Settings tab.</p>
 
         <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/</span></div>
-          <div class="endpoint-body"><p>Health check. Returns <code>{ ok: true, message: 'Crafty Form Server' }</code>.</p></div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/_health</span></div>
-          <div class="endpoint-body"><p>Returns plain text <code>ok</code>. Used by Fly.io health checks.</p></div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/submit</span></div>
+          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/api/incoming-webhook/:apiKey/:formId</span></div>
           <div class="endpoint-body">
-            <p>Delegates to <code>functions/submit.js</code> Netlify handler. Handles full form submission including validation, asset linking, and Google Sheets append.</p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/getSheets</span></div>
-          <div class="endpoint-body"><p>Delegates to <code>functions/getSheets.js</code>. Returns a list of sheets in a spreadsheet.</p></div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/getSheetData</span></div>
-          <div class="endpoint-body"><p>Delegates to <code>functions/getSheetData.js</code>. Returns row data from a named sheet.</p></div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/getSheetRange</span></div>
-          <div class="endpoint-body">
-            <p>Returns values from a specific sheet range. <strong>Query:</strong> <code>spreadsheetId</code>, <code>range</code> (e.g. <code>Sheet1!A:A</code>).</p>
-            <p>Used by the filler to populate options for sheet-backed choice fields.</p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/updateSheetRow</span></div>
-          <div class="endpoint-body"><p>Delegates to <code>functions/updateSheetRow.js</code>. Updates a specific row in a linked Google Sheet.</p></div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/deleteSheetRow</span></div>
-          <div class="endpoint-body"><p>Delegates to <code>functions/deleteSheetRow.js</code>. Deletes a specific row from a linked Google Sheet.</p></div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/logFormChange</span></div>
-          <div class="endpoint-body"><p>Delegates to <code>functions/logFormChange.js</code>. Writes an entry to the <code>activity_logs</code> table.</p></div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/outgoing-webhook/:formId/:secret</span></div>
-          <div class="endpoint-body">
-            <p>Receives an outgoing webhook payload from SharedForm on every submission.</p>
-            <p>Validates <code>secret</code> against <code>schema.v2.webhookSecret</code>. Enforces Pro/API plan requirement. Stores last 50 submissions in memory. Optionally forwards to <code>webhookForwardUrl</code>.</p>
-            <p><strong>Plan limits:</strong> free = 0, pro = 5, api = 10 active outgoing webhooks.</p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/outgoing-webhook/:formId/:secret</span></div>
-          <div class="endpoint-body">
-            <p>Poll stored submissions. <strong>Query:</strong> <code>limit</code> (1–50, default 10).</p>
-            <p><strong>Response:</strong> <code>{ ok, count, submissions[] }</code>.</p>
+            <p>Push a submission into a specific form, using one of that form's incoming API keys. Always writes to the named form &mdash; never creates a new one.</p>
+            <p>Body: JSON key/value pairs matching the form's field keys. The form must have <em>Incoming API</em> turned on.</p>
           </div>
         </div>
 
         <div class="endpoint">
           <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/api/incoming-webhook/:apiKey</span></div>
           <div class="endpoint-body">
-            <p>User-level incoming API. Authenticates via <code>user_api_keys</code> table. Auto-creates a form schema on first call if no matching <code>formTitle</code> exists; reuses on subsequent calls.</p>
-            <p>Body: arbitrary JSON key/value pairs + optional <code>formTitle</code> (defaults to "Imported API Form") and <code>formId</code> (to target a specific form).</p>
-            <p>Requires Pro or API plan. API plan users are metered per call and per submission.</p>
+            <p>Account-level incoming API, using your account API key. The first call with a new <code>formTitle</code> creates that form; later calls reuse it.</p>
+            <p>Body: JSON key/value pairs, plus an optional <code>formTitle</code> (defaults to "Imported API Form") or <code>formId</code> to target a specific form.</p>
           </div>
         </div>
 
         <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/api/incoming-webhook/:apiKey/:formId</span></div>
+          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/outgoing-webhook/:formId/:secret</span></div>
           <div class="endpoint-body">
-            <p>Per-form incoming API. Validates the API key against <code>schema.v2.incomingApiKey</code> stored in the specific form. Always logs to the named form — never auto-creates.</p>
-            <p>Requires <code>v2.incomingApiEnabled = true</code>. Enforces plan + per-user limit (pro = 5, api = 10 active incoming APIs).</p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/send-email</span></div>
-          <div class="endpoint-body">
-            <p>Send owner notification and/or respondent confirmation emails via SendPulse.</p>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Body field</th><th>Type</th><th>Description</th></tr></thead>
-                <tbody>
-                  <tr><td><code>formTitle</code></td><td>string</td><td>Used in email subject</td></tr>
-                  <tr><td><code>submissionId</code></td><td>string</td><td>Included in email footer</td></tr>
-                  <tr><td><code>submittedAt</code></td><td>string</td><td>ISO datetime, shown in footer</td></tr>
-                  <tr><td><code>notifyOwner</code></td><td>boolean</td><td>Send to owner if true</td></tr>
-                  <tr><td><code>notifyOwnerEmail</code></td><td>string</td><td>Owner recipient address</td></tr>
-                  <tr><td><code>notifyRespondent</code></td><td>boolean</td><td>Send to respondent if true</td></tr>
-                  <tr><td><code>respondentEmail</code></td><td>string</td><td>Respondent recipient address</td></tr>
-                  <tr><td><code>customMessage</code></td><td>string</td><td>Overrides default body text</td></tr>
-                  <tr><td><code>fields</code></td><td>array</td><td><code>[{ label, value }]</code> table shown in email body</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p><strong>Response:</strong> <code>{ ok, sent }</code> — number of emails successfully delivered.</p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/send-welcome-email</span></div>
-          <div class="endpoint-body">
-            <p>Send a welcome email to a new user. Body: <code>{ email }</code>.</p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/api/feature-limits</span></div>
-          <div class="endpoint-body">
-            <p>Returns active counts and per-plan limits for outgoing webhooks and incoming API. <strong>Query:</strong> <code>user_id</code> (UUID).</p>
-            <p><strong>Response:</strong></p>
-            <pre><code>{
-  <span class="tok-var">outgoing_webhook</span>: { active, limit, plan, can_enable },
-  <span class="tok-var">incoming_api</span>:    { active, limit, plan, can_enable }
-}</code></pre>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/api/my-api-key</span></div>
-          <div class="endpoint-body">
-            <p>Return the user's API key (auto-creates one if none exists). <strong>Query:</strong> <code>user_id</code>. Requires Pro or API plan.</p>
-            <p><strong>Response:</strong> <code>{ api_key }</code></p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/api/regenerate-api-key</span></div>
-          <div class="endpoint-body">
-            <p>Revoke all existing API keys and issue a new one. Body: <code>{ user_id }</code>. Requires Pro or API plan.</p>
-            <p><strong>Response:</strong> <code>{ api_key }</code></p>
+            <p>Poll a form's recent submissions with the form's webhook secret. <strong>Query:</strong> <code>limit</code> (1&ndash;50, default 10).</p>
+            <p><strong>Response:</strong> <code>{ ok, count, submissions[] }</code>.</p>
           </div>
         </div>
       </section>
 
       <section id="api-mcp">
-        <h3 class="sub-title">MCP Server (/mcp)</h3>
+        <h2 class="section-title">MCP Server (/mcp)</h2>
         <p>
           Implements the <a href="https://spec.modelcontextprotocol.io" target="_blank">Model Context Protocol</a> over HTTP + SSE.
-          Requires Pro or API plan. Auth via <code>Authorization: Bearer &lt;token&gt;</code> or <code>?api_key=&lt;token&gt;</code>.
+          Needs the Pro plan or higher. Auth via <code>Authorization: Bearer &lt;token&gt;</code> or <code>?api_key=&lt;token&gt;</code>.
         </p>
         <div class="table-wrap">
           <table>
@@ -1258,72 +1256,15 @@
           </table>
         </div>
         <p>
-          OAuth metadata stubs at <code>/.well-known/oauth-authorization-server</code> and <code>POST /register</code> satisfy mcp-remote's OAuth discovery flow without requiring a real OAuth server.
-        </p>
-        <p>
-          Connection counts are tracked in <code>mcp_connections</code> table.
+          The number of connected MCP clients is limited per plan.
           SSE sessions time out after 3 min without a heartbeat; HTTP sessions after 5 min.
         </p>
-      </section>
-
-      <section id="api-payments">
-        <h3 class="sub-title">Payments API (/payments)</h3>
-        <p>Powered by <strong>Dodo Payments</strong>. Live keys use <code>https://live.dodopayments.com</code>; all others use the test endpoint.</p>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/payments/status</span></div>
-          <div class="endpoint-body">
-            <p>Return current plan for a user. <strong>Query:</strong> <code>user_id</code>.</p>
-            <p><strong>Response:</strong> <code>{ plan, status, billing_interval, current_period_end, credit_balance_usd }</code></p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/payments/create-checkout</span></div>
-          <div class="endpoint-body">
-            <p>Create a Dodo checkout session. Body: <code>{ user_id, email?, name?, plan, tier?, interval? }</code>.</p>
-            <p>Plans: <code>pro</code> or <code>api</code>. Tiers for pro: <code>payg</code> (default), <code>20gb</code>, <code>50gb</code>.</p>
-            <p><strong>Response:</strong> <code>{ checkout_url }</code> — redirect the user here.</p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/payments/verify-checkout</span></div>
-          <div class="endpoint-body">
-            <p>Called from <code>/billing/success</code> after Dodo redirects back. <strong>Query:</strong> <code>session_id</code>, <code>user_id</code>.</p>
-            <p>Three resolution paths: in-memory pending store → Dodo API → DB fallback.</p>
-            <p><strong>Response:</strong> <code>{ plan, verified, source }</code></p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/payments/portal</span></div>
-          <div class="endpoint-body"><p>Returns a Dodo customer portal URL. <strong>Query:</strong> <code>user_id</code>.</p></div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/payments/cancel-subscription</span></div>
-          <div class="endpoint-body"><p>Cancel at end of current period. Body: <code>{ user_id }</code>.</p></div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method post">POST</span><span class="endpoint-path">/payments/webhook</span></div>
-          <div class="endpoint-body">
-            <p>Receives Dodo webhook events (Standard Webhooks spec). Verified via HMAC using <code>DODO_WEBHOOK_SECRET</code>. Updates plan state in Supabase via RPCs (<code>upsert_user_plan</code>, <code>add_api_credit</code>).</p>
-          </div>
-        </div>
-
-        <div class="endpoint">
-          <div class="endpoint-header"><span class="method get">GET</span><span class="endpoint-path">/payments/test-db</span></div>
-          <div class="endpoint-body"><p>Debug endpoint — tests that all required Supabase RPCs exist. Returns a results map with pass/fail per RPC.</p></div>
-        </div>
       </section>
 
       <section id="settings-reference">
         <h2 class="section-title">Settings Reference</h2>
         <p>
-          All settings below are stored inside <code>schema.v2</code> of the <code>form_schemas</code> row.
-          Builder state keys (localStorage prefix <code>fb_</code>) mirror the same names.
+          These are a form's settings. Through the REST API, pass them in <code>settings</code> when you create or update a form.
         </p>
 
         <div class="table-wrap">
@@ -1354,13 +1295,13 @@
               <tr><td><code>branding.brandColor</code></td><td>string</td><td><code>''</code></td><td>Hex accent color applied via CSS variables on the filler page.</td></tr>
               <tr><td><code>branding.logoUrl</code></td><td>string</td><td><code>''</code></td><td>URL of a custom logo shown at the top of the filler.</td></tr>
               <tr><td><code>notifications.notifyOwner</code></td><td>boolean</td><td><code>false</code></td><td>Email the owner on every submission.</td></tr>
-              <tr><td><code>notifications.ownerEmail</code></td><td>string</td><td><code>''</code></td><td>Override recipient email for owner notification. Falls back to <code>NOTIFY_OWNER_EMAIL</code> env var.</td></tr>
+              <tr><td><code>notifications.ownerEmail</code></td><td>string</td><td><code>''</code></td><td>Email address that receives the owner notification.</td></tr>
               <tr><td><code>notifications.notifyRespondent</code></td><td>boolean</td><td><code>false</code></td><td>Email the respondent a confirmation.</td></tr>
               <tr><td><code>notifications.notifyRespondentFieldId</code></td><td>string</td><td><code>''</code></td><td>Property key of the field whose value holds the respondent's email address.</td></tr>
               <tr><td><code>notifications.customMessage</code></td><td>string</td><td><code>''</code></td><td>Custom body text used in both owner and respondent emails (replaces defaults).</td></tr>
               <tr><td><code>webhookEnabled</code></td><td>boolean</td><td><code>false</code></td><td>Enable outgoing webhook on submission.</td></tr>
               <tr><td><code>webhookSecret</code></td><td>string</td><td>auto</td><td>Legacy single webhook secret (auto-generated). Use <code>webhookSecrets[]</code> for multi-key.</td></tr>
-              <tr><td><code>webhookSecrets</code></td><td>array</td><td><code>[]</code></td><td>Array of <code>{ id, secret, label, createdAt }</code>. Pro plan: up to 5; API plan: up to 10.</td></tr>
+              <tr><td><code>webhookSecrets</code></td><td>array</td><td><code>[]</code></td><td>Array of <code>{ id, secret, label, createdAt }</code>. The number allowed depends on your plan.</td></tr>
               <tr><td><code>webhookForwardUrl</code></td><td>string</td><td><code>''</code></td><td>Forward URL for the outgoing webhook relay (n8n, Zapier, Make, etc.).</td></tr>
               <tr><td><code>incomingApiEnabled</code></td><td>boolean</td><td><code>false</code></td><td>Accept incoming submissions via the per-form API endpoint.</td></tr>
               <tr><td><code>incomingApiKey</code></td><td>string</td><td>auto</td><td>Legacy single per-form API key. Use <code>incomingApiKeys[]</code> for multi-key.</td></tr>
@@ -1371,6 +1312,8 @@
         </div>
       </section>
 
+    </div>
+    <div class="docs-nav docs-nav-right" id="docs-nav-right" role="navigation" aria-label="On this page"></div>
     </div>
   </main>
 
@@ -1386,6 +1329,178 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    // Docs navigation: left = the sections, right = "On this page" for the
+    // section being read, phones = a "Contents" menu. Built from the headings
+    // below, so a new <section> with an <h2>/<h3> (or a new endpoint card)
+    // appears in the navigation without touching this script.
+    (function () {
+      var layout = document.getElementById('docs-layout');
+      var body = layout && layout.querySelector('.docs-body');
+      var left = document.getElementById('docs-nav-left');
+      var right = document.getElementById('docs-nav-right');
+      var mobile = document.getElementById('docs-toc-mobile');
+      if (!body || !left || !right || !mobile || !window.requestAnimationFrame) return;
+
+      // Headings without an id get one from their text; ids already on the
+      // page (and so every existing docs.html#… link) stay as they are.
+      var used = {};
+      Array.prototype.forEach.call(document.querySelectorAll('[id]'), function (el) { used[el.id] = true; });
+      function idFor(el, text) {
+        if (el.id) return el.id;
+        var base = String(text).toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'section';
+        var id = base, n = 2;
+        while (used[id]) id = base + '-' + n++;
+        used[id] = true;
+        el.id = id;
+        return id;
+      }
+      function text(el) { return el.textContent.replace(/\s+/g, ' ').trim(); }
+
+      // A group starts at each <h2>; the <section>s after it, up to the next
+      // <h2>, belong to it. Its sub-parts (left) are those later sections; its
+      // "On this page" items (right) are its <h3>s and endpoint cards.
+      var groups = [];
+      Array.prototype.forEach.call(body.children, function (sec) {
+        if (sec.tagName !== 'SECTION') return;
+        var h2 = sec.querySelector('h2');
+        if (h2 || !groups.length) {
+          var title = h2 ? text(h2) : (sec.querySelector('h3') ? text(sec.querySelector('h3')) : 'Overview');
+          groups.push({ title: title, el: sec, id: idFor(sec, title), parts: [], items: [] });
+        }
+        var g = groups[groups.length - 1];
+        if (sec !== g.el) {
+          var first = sec.querySelector('h3');
+          if (first) g.parts.push({ label: text(first), id: idFor(sec, text(first)) });
+        }
+        Array.prototype.forEach.call(sec.querySelectorAll('h3, .endpoint'), function (el) {
+          if (el.classList.contains('endpoint')) {
+            var m = el.querySelector('.method'), p = el.querySelector('.endpoint-path');
+            if (!m || !p) return;
+            var label = text(m).toUpperCase() + ' ' + text(p);
+            g.items.push({ label: label, id: idFor(el, label), el: el, endpoint: true });
+          } else {
+            g.items.push({ label: text(el), id: idFor(el, text(el)), el: el });
+          }
+        });
+      });
+      if (!groups.length) return;
+
+      function link(label, id, cls) {
+        var a = document.createElement('a');
+        a.href = '#' + id;
+        a.textContent = label;
+        if (cls) a.className = cls;
+        return a;
+      }
+      function heading(label) {
+        var p = document.createElement('p');
+        p.className = 'docs-nav-title';
+        p.textContent = label;
+        return p;
+      }
+
+      // Left: every group; the current one opens to show its sub-parts.
+      left.appendChild(heading('Docs'));
+      var leftList = document.createElement('ul');
+      groups.forEach(function (g) {
+        var li = document.createElement('li');
+        g.link = link(g.title, g.id);
+        li.appendChild(g.link);
+        if (g.parts.length) {
+          g.partList = document.createElement('ul');
+          g.partList.hidden = true;
+          g.parts.forEach(function (part) {
+            var pli = document.createElement('li');
+            pli.appendChild(link(part.label, part.id));
+            g.partList.appendChild(pli);
+          });
+          li.appendChild(g.partList);
+        }
+        leftList.appendChild(li);
+      });
+      left.appendChild(leftList);
+
+      // Phones: the same groups in a "Contents" menu that closes on a choice.
+      var mobileList = document.createElement('ul');
+      groups.forEach(function (g) {
+        var li = document.createElement('li');
+        li.appendChild(link(g.title, g.id));
+        mobileList.appendChild(li);
+      });
+      mobileList.addEventListener('click', function (e) { if (e.target.tagName === 'A') mobile.open = false; });
+      mobile.appendChild(mobileList);
+
+      layout.classList.add('has-nav');
+
+      // Where the reader is: the last group / item whose top has passed just
+      // under the sticky top bar. At the very bottom, the last group wins.
+      var LINE = 96;
+      var current = -1, currentItem = null;
+      function lastAbove(list) {
+        var found = -1;
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].el.getBoundingClientRect().top - LINE <= 0) found = i; else break;
+        }
+        return found;
+      }
+      function showRight(g) {
+        right.innerHTML = '';
+        if (!g.items.length) return;
+        right.appendChild(heading('On this page'));
+        var ul = document.createElement('ul');
+        g.items.forEach(function (item) {
+          var li = document.createElement('li');
+          item.link = link(item.label, item.id, item.endpoint ? 'is-endpoint' : '');
+          li.appendChild(item.link);
+          ul.appendChild(li);
+        });
+        right.appendChild(ul);
+      }
+      function mark(a, on) {
+        if (!a) return;
+        a.classList.toggle('is-current', on);
+        if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+      }
+      function update() {
+        var atBottom = window.innerHeight + window.pageYOffset >= document.documentElement.scrollHeight - 2;
+        var gi = atBottom ? groups.length - 1 : Math.max(0, lastAbove(groups));
+        if (gi !== current) {
+          if (current >= 0) {
+            mark(groups[current].link, false);
+            if (groups[current].partList) groups[current].partList.hidden = true;
+          }
+          current = gi;
+          mark(groups[gi].link, true);
+          if (groups[gi].partList) groups[gi].partList.hidden = false;
+          showRight(groups[gi]);
+          currentItem = null;
+          // Keep the current group in view inside the left list (not the page).
+          var top = groups[gi].link.offsetTop;
+          if (top < left.scrollTop || top > left.scrollTop + left.clientHeight - 60) left.scrollTop = Math.max(0, top - 60);
+        }
+        var items = groups[gi].items;
+        var ii = atBottom ? items.length - 1 : lastAbove(items);
+        var item = ii >= 0 ? items[ii] : null;
+        if (item !== currentItem) {
+          mark(currentItem && currentItem.link, false);
+          currentItem = item;
+          mark(item && item.link, true);
+        }
+      }
+
+      var queued = false;
+      function onScroll() {
+        if (queued) return;
+        queued = true;
+        window.requestAnimationFrame(function () { queued = false; update(); });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      update();
+    })();
+  </script>
 
 </body>
 </html>
